@@ -1,0 +1,30 @@
+apply plugin: 'idea'
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'maven'
+
+	defaultTasks 'tasks'
+
+	group = 'net.nlacombe'
+	version = '0.0.1'
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	repositories {
+		mavenCentral()
+		mavenLocal()
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.4.1'
+}
+
+idea {
+	module {
+		downloadJavadoc = true
+		downloadSources = false
+	}
+}
