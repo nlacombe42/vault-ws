@@ -25,4 +25,13 @@ public class AccountWebServiceImpl implements AccountWebService
 
 		return accountService.createAccount(account);
 	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public Account getAccountByName(String name)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		return accountService.getAccountByName(userId, name);
+	}
 }
