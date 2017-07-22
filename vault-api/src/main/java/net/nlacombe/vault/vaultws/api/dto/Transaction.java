@@ -7,9 +7,9 @@ public class Transaction
 {
 	private int transactionId;
 
-	private Account account;
+	private int accountId;
 
-	private Category category;
+	private Integer categoryId;
 
 	private Instant datetime;
 
@@ -27,24 +27,24 @@ public class Transaction
 		this.transactionId = transactionId;
 	}
 
-	public Account getAccount()
+	public int getAccountId()
 	{
-		return account;
+		return accountId;
 	}
 
-	public void setAccount(Account account)
+	public void setAccountId(int accountId)
 	{
-		this.account = account;
+		this.accountId = accountId;
 	}
 
-	public Category getCategory()
+	public Integer getCategoryId()
 	{
-		return category;
+		return categoryId;
 	}
 
-	public void setCategory(Category category)
+	public void setCategoryId(Integer categoryId)
 	{
-		this.category = category;
+		this.categoryId = categoryId;
 	}
 
 	public Instant getDatetime()

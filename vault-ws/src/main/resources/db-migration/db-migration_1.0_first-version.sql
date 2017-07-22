@@ -18,7 +18,7 @@ CREATE TABLE `transaction` (
   `datetime`       TIMESTAMP        NOT NULL,
   `description`    TEXT             NOT NULL,
   `amount`         DECIMAL(15, 2)   NOT NULL,
-  `category_id`    INT(10) UNSIGNED NOT NULL,
+  `category_id`    INT(10) UNSIGNED NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `fk_transaction_account_idx` (`account_id`),
   KEY `fk_transaction_category_idx` (`category_id`),

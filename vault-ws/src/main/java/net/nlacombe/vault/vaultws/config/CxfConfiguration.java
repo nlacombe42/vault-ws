@@ -1,5 +1,7 @@
 package net.nlacombe.vault.vaultws.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import net.nlacombe.wsutils.filter.CorsFilter;
 import net.nlacombe.wsutils.filter.RequestLogFilter;
@@ -31,6 +33,9 @@ public class CxfConfiguration
 	@Bean
 	public JacksonJsonProvider jacksonJsonProvider()
 	{
-		return new JacksonJsonProvider();
+		ObjectMapper jsonConverter = new ObjectMapper();
+		jsonConverter.registerModule(new JavaTimeModule());
+
+		return new JacksonJsonProvider(jsonConverter);
 	}
 }

@@ -24,7 +24,7 @@ dependencyManagement {
 dependencies {
 	compile project(':vault-api')
 
-	compile 'net.nlacombe:ws-utils:3.0.0'
+	compile 'net.nlacombe:ws-utils:3.0.1'
 	compile 'net.nlacombe:auth-lib:2.0.0'
 
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
@@ -37,6 +37,7 @@ dependencies {
 	compile 'org.flywaydb:flyway-core:4.1.2'
 	compile 'javax.inject:javax.inject:1'
 	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.8.1'
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.9'
 
 	compile 'org.slf4j:slf4j-api:1.7.25'
 
