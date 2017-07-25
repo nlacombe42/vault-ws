@@ -28,6 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 				.addFilterBefore(authTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().authorizeRequests().anyRequest().authenticated();
+				.and().authorizeRequests()
+				.mvcMatchers("/health").permitAll()
+				.anyRequest().authenticated();
 	}
 }
