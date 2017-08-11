@@ -24,7 +24,7 @@ dependencyManagement {
 dependencies {
 	compile project(':vault-api')
 
-	compile 'net.nlacombe:ws-utils:3.0.1'
+	compile 'net.nlacombe:ws-utils:4.0.0'
 	compile 'net.nlacombe:auth-lib:2.0.0'
 
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
