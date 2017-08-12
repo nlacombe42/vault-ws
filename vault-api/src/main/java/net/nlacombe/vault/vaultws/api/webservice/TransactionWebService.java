@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @FeignClient(serviceId = "vault-ws", path = VaultWsPathConstants.API_PATH_PREFIX)
-@Path(VaultWsPathConstants.V1_URL_PATH + "transactions")
+@Path(VaultWsPathConstants.V1_URL_PATH + "/transactions")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface TransactionWebService
