@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.Instant;
 
 @Service
 public class TransactionWebServiceImpl implements TransactionWebService
@@ -22,5 +24,15 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		return transactionService.createTransaction(userId, transaction);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public boolean transactionExists(String datetimeText, String description, BigDecimal amount)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+		Instant datetime = Instant.parse(datetimeText);
+
+		return transactionService.transactionExists(userId, datetime, description, amount);
 	}
 }

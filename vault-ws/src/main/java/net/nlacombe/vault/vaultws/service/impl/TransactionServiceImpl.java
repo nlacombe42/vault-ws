@@ -13,6 +13,8 @@ import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.Instant;
 
 @Service
 public class TransactionServiceImpl implements TransactionService
@@ -44,6 +46,12 @@ public class TransactionServiceImpl implements TransactionService
 		transactionEntity = transactionRepository.save(transactionEntity);
 
 		return transactionMapper.mapToDto(transactionEntity);
+	}
+
+	@Override
+	public boolean transactionExists(int userId, Instant datetime, String description, BigDecimal amount)
+	{
+		return transactionRepository.existsByAccountUserIdAndDatetimeAndDescriptionAndAmount(userId, datetime, description, amount);
 	}
 
 	private CategoryEntity getCategoryEntity(int userId, Integer categoryId)
