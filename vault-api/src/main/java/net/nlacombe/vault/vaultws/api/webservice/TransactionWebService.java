@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
+import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
 import javax.ws.rs.Consumes;
@@ -22,9 +23,13 @@ public interface TransactionWebService
 	@POST
 	Transaction createTransaction(Transaction transaction);
 
+	/**
+	 * @throws NotFoundRestException when the account is not found or not associated to the user.
+	 */
 	@GET
-	@Path("/exists")
-	boolean transactionExists(@QueryParam("datetime") String datetime,
-							  @QueryParam("description") String description,
-							  @QueryParam("amount") BigDecimal amount);
+	@Path("/count")
+	int countTransactions(@QueryParam("accountId") int accountId,
+						  @QueryParam("datetime") String datetime,
+						  @QueryParam("description") String description,
+						  @QueryParam("amount") BigDecimal amount) throws NotFoundRestException;
 }

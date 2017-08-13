@@ -16,6 +16,9 @@ public class BeanMapper<DtoType, EntityType> implements Mapper<DtoType, EntityTy
 	@Override
 	public EntityType mapToEntity(DtoType dto)
 	{
+		if (dto == null)
+			return null;
+
 		EntityType entity = BeanUtils.instantiate(entityClass);
 
 		BeanUtils.copyProperties(dto, entity);
@@ -26,6 +29,9 @@ public class BeanMapper<DtoType, EntityType> implements Mapper<DtoType, EntityTy
 	@Override
 	public DtoType mapToDto(EntityType entity)
 	{
+		if (entity == null)
+			return null;
+
 		DtoType dto = BeanUtils.instantiate(dtoClass);
 
 		BeanUtils.copyProperties(entity, dto);

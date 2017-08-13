@@ -10,5 +10,5 @@ import java.time.Instant;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Integer>
 {
-	boolean existsByAccountUserIdAndDatetimeAndDescriptionAndAmount(int userId, Instant datetime, String description, BigDecimal amount);
+	int countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(int accountId, Instant datetime, String description, BigDecimal amount);
 }

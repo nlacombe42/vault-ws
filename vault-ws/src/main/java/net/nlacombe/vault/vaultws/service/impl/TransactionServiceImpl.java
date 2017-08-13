@@ -49,9 +49,9 @@ public class TransactionServiceImpl implements TransactionService
 	}
 
 	@Override
-	public boolean transactionExists(int userId, Instant datetime, String description, BigDecimal amount)
+	public int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount)
 	{
-		return transactionRepository.existsByAccountUserIdAndDatetimeAndDescriptionAndAmount(userId, datetime, description, amount);
+		return transactionRepository.countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(accountId, datetime, description, amount);
 	}
 
 	private CategoryEntity getCategoryEntity(int userId, Integer categoryId)

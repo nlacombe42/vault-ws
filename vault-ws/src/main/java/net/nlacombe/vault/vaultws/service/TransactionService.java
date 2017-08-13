@@ -9,5 +9,5 @@ public interface TransactionService
 {
 	Transaction createTransaction(int userId, Transaction transaction);
 
-	boolean transactionExists(int userId, Instant datetime, String description, BigDecimal amount);
+	int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount);
 }
