@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @Transactional
@@ -44,6 +45,15 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		validateUserHasAccount(accountId, userId);
 
 		return transactionService.countTransactions(accountId, datetime, description, amount);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public List<Transaction> getUncategorizedTransactions()
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		return transactionService.getUncategorizedTransactions(userId);
 	}
 
 	private void validateUserHasAccount(int accountId, int userId)

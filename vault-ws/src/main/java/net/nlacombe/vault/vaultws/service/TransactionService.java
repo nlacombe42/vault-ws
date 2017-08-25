@@ -4,10 +4,13 @@ import net.nlacombe.vault.vaultws.api.dto.Transaction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 public interface TransactionService
 {
 	Transaction createTransaction(int userId, Transaction transaction);
 
 	int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount);
+
+	List<Transaction> getUncategorizedTransactions(int userId);
 }
