@@ -25,12 +25,6 @@ public class CxfConfiguration
 	}
 
 	@Bean
-	public CorsFilter corsFilter()
-	{
-		return new CorsFilter();
-	}
-
-	@Bean
 	public JacksonJsonProvider jacksonJsonProvider()
 	{
 		ObjectMapper jsonConverter = new ObjectMapper();

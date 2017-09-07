@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
+import java.util.List;
 
 @FeignClient(serviceId = "vault-ws", path = VaultWsPathConstants.API_PATH_PREFIX)
 @Path(VaultWsPathConstants.V1_URL_PATH + "/transactions")
@@ -32,4 +33,8 @@ public interface TransactionWebService
 						  @QueryParam("datetime") String datetime,
 						  @QueryParam("description") String description,
 						  @QueryParam("amount") BigDecimal amount) throws NotFoundRestException;
+
+	@GET
+	@Path("/uncategorized")
+	List<Transaction> getUncategorizedTransactions();
 }

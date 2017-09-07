@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService
@@ -52,6 +54,14 @@ public class TransactionServiceImpl implements TransactionService
 	public int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount)
 	{
 		return transactionRepository.countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(accountId, datetime, description, amount);
+	}
+
+	@Override
+	public List<Transaction> getUncategorizedTransactions(int userId)
+	{
+		return transactionRepository.findByCategory(null)
+				.map(transactionMapper::mapToDto)
+				.collect(Collectors.toList());
 	}
 
 	private CategoryEntity getCategoryEntity(int userId, Integer categoryId)
