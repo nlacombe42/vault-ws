@@ -14,8 +14,13 @@ import javax.inject.Inject;
 @Transactional
 public class AccountWebServiceImpl implements AccountWebService
 {
-	@Inject
 	private AccountService accountService;
+
+	@Inject
+	public AccountWebServiceImpl(AccountService accountService)
+	{
+		this.accountService = accountService;
+	}
 
 	@PreAuthorize("isAuthenticated()")
 	@Override

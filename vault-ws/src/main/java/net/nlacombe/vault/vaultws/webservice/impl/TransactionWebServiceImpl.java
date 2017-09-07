@@ -19,11 +19,15 @@ import java.time.Instant;
 @Transactional
 public class TransactionWebServiceImpl implements TransactionWebService
 {
-	@Inject
 	private TransactionService transactionService;
+	private AccountService accountService;
 
 	@Inject
-	private AccountService accountService;
+	public TransactionWebServiceImpl(TransactionService transactionService, AccountService accountService)
+	{
+		this.transactionService = transactionService;
+		this.accountService = accountService;
+	}
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
