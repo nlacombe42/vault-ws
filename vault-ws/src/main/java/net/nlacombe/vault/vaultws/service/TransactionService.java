@@ -1,5 +1,7 @@
 package net.nlacombe.vault.vaultws.service;
 
+import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
+import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 
 import java.math.BigDecimal;
@@ -13,4 +15,8 @@ public interface TransactionService
 	int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount);
 
 	List<Transaction> getUncategorizedTransactions(int userId);
+
+	void categorizeTransaction(int userId, int transactionId, Integer categoryId);
+
+	PaginationResponse<Transaction> searchTransactions(int userId, SearchTransactionsRequest searchTransactionsRequest);
 }

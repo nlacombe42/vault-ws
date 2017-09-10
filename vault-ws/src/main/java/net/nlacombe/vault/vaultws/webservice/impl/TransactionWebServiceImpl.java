@@ -2,6 +2,9 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 
 import net.maatvirtue.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Account;
+import net.nlacombe.vault.vaultws.api.dto.CategorizeRequest;
+import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
+import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.webservice.TransactionWebService;
 import net.nlacombe.vault.vaultws.service.AccountService;
@@ -58,6 +61,24 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		return transactionService.getUncategorizedTransactions(userId);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public void categorizeTransaction(Integer transactionId, CategorizeRequest categorizeRequest)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		transactionService.categorizeTransaction(userId, transactionId, categorizeRequest.getCategoryId());
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public PaginationResponse<Transaction> searchTransactions(SearchTransactionsRequest searchTransactionsRequest)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		return transactionService.searchTransactions(userId, searchTransactionsRequest);
 	}
 
 	private void validateUserHasAccount(int accountId, int userId)

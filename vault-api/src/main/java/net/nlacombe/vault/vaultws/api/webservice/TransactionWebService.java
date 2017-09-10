@@ -1,5 +1,8 @@
 package net.nlacombe.vault.vaultws.api.webservice;
 
+import net.nlacombe.vault.vaultws.api.dto.CategorizeRequest;
+import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
+import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
 import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
@@ -8,7 +11,9 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -34,7 +39,15 @@ public interface TransactionWebService
 						  @QueryParam("description") String description,
 						  @QueryParam("amount") BigDecimal amount) throws NotFoundRestException;
 
+	@POST
+	@Path("/search")
+	PaginationResponse<Transaction> searchTransactions(SearchTransactionsRequest searchTransactionsRequest);
+
 	@GET
 	@Path("/uncategorized")
 	List<Transaction> getUncategorizedTransactions();
+
+	@PUT
+	@Path("/{transactionId}/category")
+	void categorizeTransaction(@PathParam("transactionId") Integer transactionId, CategorizeRequest categorizeRequest);
 }

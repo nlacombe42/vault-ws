@@ -1,5 +1,8 @@
 package net.nlacombe.vault.vaultws.service.impl;
 
+import net.nlacombe.vault.vaultws.api.dto.PaginationRequest;
+import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
+import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.entity.AccountEntity;
 import net.nlacombe.vault.vaultws.entity.CategoryEntity;
@@ -9,7 +12,10 @@ import net.nlacombe.vault.vaultws.repositorty.AccountRepository;
 import net.nlacombe.vault.vaultws.repositorty.CategoryRepository;
 import net.nlacombe.vault.vaultws.repositorty.TransactionRepository;
 import net.nlacombe.vault.vaultws.service.TransactionService;
+import net.nlacombe.vault.vaultws.util.PaginationUtils;
 import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -62,6 +68,41 @@ public class TransactionServiceImpl implements TransactionService
 		return transactionRepository.findByCategory(null)
 				.map(transactionMapper::mapToDto)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void categorizeTransaction(int userId, int transactionId, Integer categoryId)
+	{
+		TransactionEntity transactionEntity = getTransactionEntity(userId, transactionId);
+		transactionEntity.setCategory(getCategoryEntity(userId, categoryId));
+		transactionRepository.save(transactionEntity);
+	}
+
+	@Override
+	public PaginationResponse<Transaction> searchTransactions(int userId, SearchTransactionsRequest searchTransactionsRequest)
+	{
+		PaginationRequest paginationRequest = searchTransactionsRequest.getPaginationRequest();
+		Pageable pageRequest = PaginationUtils.toPageRequest(paginationRequest);
+
+		Page<TransactionEntity> transactionsPage = transactionRepository.findByAccountUserIdOrderByDatetimeDesc(userId, pageRequest);
+		List<Transaction> transactions = transactionsPage.getContent()
+				.stream()
+				.map(transactionMapper::mapToDto)
+				.collect(Collectors.toList());
+
+		return new PaginationResponse<>(paginationRequest, transactionsPage.getTotalElements(), transactions);
+	}
+
+	private TransactionEntity getTransactionEntity(int userId, int transactionId)
+	{
+		NotFoundRestException transcationNotFound = new NotFoundRestException("Transaction with ID " + transactionId + " not found for user ID " + userId);
+
+		TransactionEntity transactionEntity = transactionRepository.findOne(transactionId).orElseThrow(() -> transcationNotFound);
+
+		if (transactionEntity.getAccount().getUserId() != userId)
+			throw transcationNotFound;
+
+		return transactionEntity;
 	}
 
 	private CategoryEntity getCategoryEntity(int userId, Integer categoryId)
