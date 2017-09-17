@@ -4,6 +4,7 @@ import net.maatvirtue.authlib.spring.AuthTokenAuthenticationFilter;
 import net.maatvirtue.authlib.spring.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -42,6 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	{
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig = corsConfig.applyPermitDefaultValues();
+		corsConfig.addAllowedMethod(HttpMethod.PUT);
+		corsConfig.addAllowedMethod(HttpMethod.DELETE);
 
 		UrlBasedCorsConfigurationSource corsConfigSource = new UrlBasedCorsConfigurationSource();
 		corsConfigSource.registerCorsConfiguration("/**", corsConfig);
