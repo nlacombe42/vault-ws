@@ -23,4 +23,6 @@ public interface TransactionRepository extends org.springframework.data.reposito
 	Stream<TransactionEntity> findByCategory(CategoryEntity categoryEntity);
 
 	Page<TransactionEntity> findByAccountUserIdOrderByDatetimeDesc(int userId, Pageable pageable);
+
+	Page<TransactionEntity> findByAccountUserIdAndCategoryNotNullOrderByDatetimeDesc(int userId, Pageable pageable);
 }

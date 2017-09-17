@@ -84,13 +84,25 @@ public class TransactionServiceImpl implements TransactionService
 		PaginationRequest paginationRequest = searchTransactionsRequest.getPaginationRequest();
 		Pageable pageRequest = PaginationUtils.toPageRequest(paginationRequest);
 
-		Page<TransactionEntity> transactionsPage = transactionRepository.findByAccountUserIdOrderByDatetimeDesc(userId, pageRequest);
+		Page<TransactionEntity> transactionsPage = getAllOrOnlyCategorizedTransactions(userId, pageRequest, searchTransactionsRequest.isCategorizedOnly());
 		List<Transaction> transactions = transactionsPage.getContent()
 				.stream()
 				.map(transactionMapper::mapToDto)
 				.collect(Collectors.toList());
 
 		return new PaginationResponse<>(paginationRequest, transactionsPage.getTotalElements(), transactions);
+	}
+
+	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)
+	{
+		Page<TransactionEntity> transactionsPage;
+
+		if (categorizedOnly)
+			transactionsPage = transactionRepository.findByAccountUserIdAndCategoryNotNullOrderByDatetimeDesc(userId, pageRequest);
+		else
+			transactionsPage = transactionRepository.findByAccountUserIdOrderByDatetimeDesc(userId, pageRequest);
+
+		return transactionsPage;
 	}
 
 	private TransactionEntity getTransactionEntity(int userId, int transactionId)
