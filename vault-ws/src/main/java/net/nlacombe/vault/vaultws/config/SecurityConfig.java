@@ -1,7 +1,7 @@
 package net.nlacombe.vault.vaultws.config;
 
-import net.maatvirtue.authlib.spring.AuthTokenAuthenticationFilter;
-import net.maatvirtue.authlib.spring.RestAuthenticationEntryPoint;
+import net.nlacombe.authlib.spring.AuthTokenAuthenticationFilter;
+import net.nlacombe.authlib.spring.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

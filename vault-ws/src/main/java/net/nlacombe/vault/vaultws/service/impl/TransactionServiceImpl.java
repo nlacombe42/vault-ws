@@ -11,6 +11,7 @@ import net.nlacombe.vault.vaultws.mapper.TransactionMapper;
 import net.nlacombe.vault.vaultws.repositorty.AccountRepository;
 import net.nlacombe.vault.vaultws.repositorty.CategoryRepository;
 import net.nlacombe.vault.vaultws.repositorty.TransactionRepository;
+import net.nlacombe.vault.vaultws.service.CategoryAccessService;
 import net.nlacombe.vault.vaultws.service.TransactionService;
 import net.nlacombe.vault.vaultws.util.PaginationUtils;
 import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
@@ -27,17 +28,20 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionServiceImpl implements TransactionService
 {
-	@Inject
 	private AccountRepository accountRepository;
-
-	@Inject
-	private CategoryRepository categoryRepository;
-
-	@Inject
+	private CategoryAccessService categoryAccessService;
 	private TransactionRepository transactionRepository;
+	private TransactionMapper transactionMapper;
 
 	@Inject
-	private TransactionMapper transactionMapper;
+	public TransactionServiceImpl(AccountRepository accountRepository, CategoryAccessService categoryAccessService, TransactionRepository transactionRepository,
+								  TransactionMapper transactionMapper)
+	{
+		this.accountRepository = accountRepository;
+		this.categoryAccessService = categoryAccessService;
+		this.transactionRepository = transactionRepository;
+		this.transactionMapper = transactionMapper;
+	}
 
 	@Override
 	public Transaction createTransaction(int userId, Transaction transaction)
@@ -45,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService
 		transaction.setTransactionId(0);
 
 		AccountEntity accountEntity = getAccountEntity(userId, transaction.getAccountId());
-		CategoryEntity categoryentity = getCategoryEntity(userId, transaction.getCategoryId());
+		CategoryEntity categoryentity = categoryAccessService.getCategoryEntity(userId, transaction.getCategoryId());
 
 		TransactionEntity transactionEntity = transactionMapper.mapToEntity(transaction);
 		transactionEntity.setAccount(accountEntity);
@@ -74,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService
 	public void categorizeTransaction(int userId, int transactionId, Integer categoryId)
 	{
 		TransactionEntity transactionEntity = getTransactionEntity(userId, transactionId);
-		transactionEntity.setCategory(getCategoryEntity(userId, categoryId));
+		transactionEntity.setCategory(categoryAccessService.getCategoryEntity(userId, categoryId));
 		transactionRepository.save(transactionEntity);
 	}
 
@@ -115,19 +119,6 @@ public class TransactionServiceImpl implements TransactionService
 			throw transcationNotFound;
 
 		return transactionEntity;
-	}
-
-	private CategoryEntity getCategoryEntity(int userId, Integer categoryId)
-	{
-		if (categoryId == null)
-			return null;
-
-		CategoryEntity categoryEntity = categoryRepository.findOne(categoryId);
-
-		if (categoryEntity == null || categoryEntity.getUserId() != userId)
-			throw new NotFoundRestException("Category ID " + categoryId + " not found for user ID " + userId);
-
-		return categoryEntity;
 	}
 
 	private AccountEntity getAccountEntity(int userId, int accountId)
