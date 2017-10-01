@@ -33,6 +33,7 @@ public class BudgetServiceImpl implements BudgetService
 
 		BudgetEntity budgetEntity = budgetMapper.mapToEntity(budget);
 		budgetEntity.setCategory(categoryEntity);
+		budgetEntity.setUserId(userId);
 
 		budgetEntity = budgetRepository.save(budgetEntity);
 
