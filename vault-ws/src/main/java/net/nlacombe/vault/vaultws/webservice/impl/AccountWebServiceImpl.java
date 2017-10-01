@@ -1,6 +1,6 @@
 package net.nlacombe.vault.vaultws.webservice.impl;
 
-import net.maatvirtue.authlib.spring.AuthUtil;
+import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Account;
 import net.nlacombe.vault.vaultws.api.webservice.AccountWebService;
 import net.nlacombe.vault.vaultws.service.AccountService;

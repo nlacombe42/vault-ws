@@ -7,7 +7,7 @@ subprojects {
 	defaultTasks 'tasks'
 
 	group = 'net.nlacombe'
-	version = '4.4.1'
+	version = '4.5.0'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -23,7 +23,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '3.4.1'
+	gradleVersion = '4.2'
 }
 
 idea {
