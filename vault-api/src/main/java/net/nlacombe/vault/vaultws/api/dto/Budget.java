@@ -6,14 +6,11 @@ import java.time.Instant;
 public class Budget
 {
 	private int budgetId;
-
 	private int categoryId;
-
 	private Instant startDate;
-
 	private Instant endDate;
-
-	private BigDecimal amount;
+	private BigDecimal plannedMaxAmount;
+	private BigDecimal currentAmount;
 
 	public int getBudgetId()
 	{
@@ -55,13 +52,23 @@ public class Budget
 		this.endDate = endDate;
 	}
 
-	public BigDecimal getAmount()
+	public BigDecimal getPlannedMaxAmount()
 	{
-		return amount;
+		return plannedMaxAmount;
 	}
 
-	public void setAmount(BigDecimal amount)
+	public void setPlannedMaxAmount(BigDecimal plannedMaxAmount)
 	{
-		this.amount = amount;
+		this.plannedMaxAmount = plannedMaxAmount;
+	}
+
+	public BigDecimal getCurrentAmount()
+	{
+		return currentAmount;
+	}
+
+	public void setCurrentAmount(BigDecimal currentAmount)
+	{
+		this.currentAmount = currentAmount;
 	}
 }

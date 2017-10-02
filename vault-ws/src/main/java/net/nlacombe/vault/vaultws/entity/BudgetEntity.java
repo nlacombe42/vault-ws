@@ -28,7 +28,7 @@ public class BudgetEntity
 
 	private Instant endDate;
 
-	private BigDecimal amount;
+	private BigDecimal plannedMaxAmount;
 
 	public int getBudgetId()
 	{
@@ -80,13 +80,13 @@ public class BudgetEntity
 		this.endDate = endDate;
 	}
 
-	public BigDecimal getAmount()
+	public BigDecimal getPlannedMaxAmount()
 	{
-		return amount;
+		return plannedMaxAmount;
 	}
 
-	public void setAmount(BigDecimal amount)
+	public void setPlannedMaxAmount(BigDecimal plannedMaxAmount)
 	{
-		this.amount = amount;
+		this.plannedMaxAmount = plannedMaxAmount;
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.time.Instant;
+import java.util.List;
 
 @Service
 @Transactional
@@ -27,8 +29,18 @@ public class BudgetWebServiceImpl implements BudgetWebService
 	public Budget createBudget(Budget budget)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
-		budget.setBudgetId(0);
 
 		return budgetService.createBudget(userId, budget);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public List<Budget> getBudgets(String startDateText, String endDateText)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+		Instant startDate = Instant.parse(startDateText);
+		Instant endDate = Instant.parse(endDateText);
+
+		return budgetService.getBudgets(userId, startDate, endDate);
 	}
 }

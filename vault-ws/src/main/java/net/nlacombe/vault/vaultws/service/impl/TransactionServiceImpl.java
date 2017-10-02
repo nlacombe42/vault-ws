@@ -9,7 +9,6 @@ import net.nlacombe.vault.vaultws.entity.CategoryEntity;
 import net.nlacombe.vault.vaultws.entity.TransactionEntity;
 import net.nlacombe.vault.vaultws.mapper.TransactionMapper;
 import net.nlacombe.vault.vaultws.repositorty.AccountRepository;
-import net.nlacombe.vault.vaultws.repositorty.CategoryRepository;
 import net.nlacombe.vault.vaultws.repositorty.TransactionRepository;
 import net.nlacombe.vault.vaultws.service.CategoryAccessService;
 import net.nlacombe.vault.vaultws.service.TransactionService;
@@ -95,6 +94,14 @@ public class TransactionServiceImpl implements TransactionService
 				.collect(Collectors.toList());
 
 		return new PaginationResponse<>(paginationRequest, transactionsPage.getTotalElements(), transactions);
+	}
+
+	@Override
+	public BigDecimal getCategoryTotal(int userId, int categoryId, Instant startDate, Instant endDate)
+	{
+		BigDecimal categoryTotal = transactionRepository.getCategoryTotal(userId, categoryId, startDate, endDate);
+
+		return categoryTotal == null ? BigDecimal.ZERO : categoryTotal;
 	}
 
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)

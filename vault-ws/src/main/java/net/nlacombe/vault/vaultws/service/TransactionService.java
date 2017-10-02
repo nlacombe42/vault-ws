@@ -19,4 +19,6 @@ public interface TransactionService
 	void categorizeTransaction(int userId, int transactionId, Integer categoryId);
 
 	PaginationResponse<Transaction> searchTransactions(int userId, SearchTransactionsRequest searchTransactionsRequest);
+
+	BigDecimal getCategoryTotal(int userId, int categoryId, Instant startDate, Instant endDate);
 }

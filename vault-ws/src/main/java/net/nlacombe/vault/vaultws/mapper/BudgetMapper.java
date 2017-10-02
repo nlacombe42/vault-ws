@@ -1,24 +1,31 @@
 package net.nlacombe.vault.vaultws.mapper;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
-import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.entity.BudgetEntity;
 import net.nlacombe.vault.vaultws.entity.CategoryEntity;
-import net.nlacombe.vault.vaultws.entity.TransactionEntity;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
-public class BudgetMapper extends BeanMapper<Budget, BudgetEntity>
+public class BudgetMapper
 {
+	private BeanMapper<Budget, BudgetEntity> beanMapper;
+
 	public BudgetMapper()
 	{
-		super(Budget.class, BudgetEntity.class);
+		beanMapper = new BeanMapper<>(Budget.class, BudgetEntity.class);
 	}
 
-	@Override
-	public Budget mapToDto(BudgetEntity budgetEntity)
+	public BudgetEntity mapToEntity(Budget budget)
 	{
-		Budget budgetDto = super.mapToDto(budgetEntity);
+		return beanMapper.mapToEntity(budget);
+	}
+
+	public Budget mapToDto(BudgetEntity budgetEntity, BigDecimal currentAmount)
+	{
+		Budget budgetDto = beanMapper.mapToDto(budgetEntity);
+		budgetDto.setCurrentAmount(currentAmount);
 
 		CategoryEntity category = budgetEntity.getCategory();
 
