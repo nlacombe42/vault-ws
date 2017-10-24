@@ -1,6 +1,7 @@
 package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
@@ -20,7 +21,8 @@ import java.util.List;
 public interface BudgetWebService
 {
 	@POST
-	Budget createBudget(Budget budget);
+	@Path("/month")
+	Budget createMonthBudget(MonthBudgetCreationRequest monthBudgetCreationRequest);
 
 	@GET
 	List<Budget> getBudgets(@QueryParam("startDate") String startDateText, @QueryParam("endDate") String endDateText);

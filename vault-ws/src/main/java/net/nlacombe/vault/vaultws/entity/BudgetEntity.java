@@ -23,12 +23,10 @@ public class BudgetEntity
 	private CategoryEntity category;
 
 	private int userId;
-
 	private Instant startDate;
-
 	private Instant endDate;
-
 	private BigDecimal plannedMaxAmount;
+	private String budgetTypeCode;
 
 	public int getBudgetId()
 	{
@@ -88,5 +86,15 @@ public class BudgetEntity
 	public void setPlannedMaxAmount(BigDecimal plannedMaxAmount)
 	{
 		this.plannedMaxAmount = plannedMaxAmount;
+	}
+
+	public String getBudgetTypeCode()
+	{
+		return budgetTypeCode;
+	}
+
+	public void setBudgetTypeCode(String budgetTypeCode)
+	{
+		this.budgetTypeCode = budgetTypeCode;
 	}
 }

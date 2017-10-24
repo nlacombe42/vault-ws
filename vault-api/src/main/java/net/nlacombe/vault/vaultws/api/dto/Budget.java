@@ -7,6 +7,7 @@ public class Budget
 {
 	private int budgetId;
 	private int categoryId;
+	private BudgetType budgetType;
 	private Instant startDate;
 	private Instant endDate;
 	private BigDecimal plannedMaxAmount;
@@ -30,6 +31,16 @@ public class Budget
 	public void setCategoryId(int categoryId)
 	{
 		this.categoryId = categoryId;
+	}
+
+	public BudgetType getBudgetType()
+	{
+		return budgetType;
+	}
+
+	public void setBudgetType(BudgetType budgetType)
+	{
+		this.budgetType = budgetType;
 	}
 
 	public Instant getStartDate()

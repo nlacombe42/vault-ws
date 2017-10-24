@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 
 import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.webservice.BudgetWebService;
 import net.nlacombe.vault.vaultws.service.BudgetService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +27,11 @@ public class BudgetWebServiceImpl implements BudgetWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
-	public Budget createBudget(Budget budget)
+	public Budget createMonthBudget(MonthBudgetCreationRequest monthBudgetCreationRequest)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
-		return budgetService.createBudget(userId, budget);
+		return budgetService.createMonthBudget(userId, monthBudgetCreationRequest);
 	}
 
 	@PreAuthorize("isAuthenticated()")

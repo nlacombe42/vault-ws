@@ -19,4 +19,15 @@ public interface BudgetRepository extends JpaRepository<BudgetEntity, Integer>
 	Stream<BudgetEntity> findByRange(@Param("userId") int userId,
 									 @Param("startDate") Instant startDate,
 									 @Param("endDate") Instant endDate);
+
+	@Query("select CASE WHEN COUNT(b) > 0 THEN true ELSE false END " +
+			"from BudgetEntity b where b.userId = :userId and " +
+			"((b.startDate >= :startDate and b.startDate <= :endDate) or " +
+			"(b.endDate >= :startDate and b.endDate <= :endDate) or " +
+			"(b.startDate <= :startDate and b.endDate >= :endDate)) " +
+			"and b.category.categoryId = :categoryId")
+	boolean existsByRangeAndCategoryId(@Param("userId") int userId,
+									   @Param("startDate") Instant startDate,
+									   @Param("endDate") Instant endDate,
+									   @Param("categoryId") int categoryId);
 }
