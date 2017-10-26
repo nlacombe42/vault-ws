@@ -18,14 +18,6 @@ public class BudgetMapper
 		beanMapper = new BeanMapper<>(Budget.class, BudgetEntity.class);
 	}
 
-	public BudgetEntity mapToEntity(Budget budget)
-	{
-		BudgetEntity budgetEntity = beanMapper.mapToEntity(budget);
-		budgetEntity.setBudgetTypeCode(budget.getBudgetType().getCode());
-
-		return budgetEntity;
-	}
-
 	public Budget mapToDto(BudgetEntity budgetEntity, BigDecimal currentAmount)
 	{
 		Budget budgetDto = beanMapper.mapToDto(budgetEntity);

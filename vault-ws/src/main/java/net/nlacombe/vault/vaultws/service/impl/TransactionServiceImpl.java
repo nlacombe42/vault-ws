@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,11 +99,20 @@ public class TransactionServiceImpl implements TransactionService
 	}
 
 	@Override
-	public BigDecimal getCategoryTotal(int userId, int categoryId, Instant startDate, Instant endDate)
+	public BigDecimal getCategoriesTotal(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate)
 	{
-		BigDecimal categoryTotal = transactionRepository.getCategoryTotal(userId, categoryId, startDate, endDate);
+		if (categoryIds.isEmpty())
+			return BigDecimal.ZERO;
+
+		BigDecimal categoryTotal = transactionRepository.getCategoriesTotal(userId, categoryIds, startDate, endDate);
 
 		return categoryTotal == null ? BigDecimal.ZERO : categoryTotal;
+	}
+
+	@Override
+	public BigDecimal getCategoryTotal(int userId, int categoryId, Instant startDate, Instant endDate)
+	{
+		return getCategoriesTotal(userId, Collections.singleton(categoryId), startDate, endDate);
 	}
 
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)

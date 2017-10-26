@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -29,7 +30,7 @@ public interface TransactionRepository extends org.springframework.data.reposito
 	Page<TransactionEntity> findByAccountUserIdAndCategoryNotNullOrderByDatetimeDesc(int userId, Pageable pageable);
 
 	@Query("select sum(t.amount) from TransactionEntity t where t.account.userId = :userId and " +
-			"t.category.categoryId = :categoryId and t.datetime >= :startDate and t.datetime <= :endDate")
-	BigDecimal getCategoryTotal(@Param("userId") int userId, @Param("categoryId") int categoryId,
-								@Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
+			"t.category.categoryId in :categoryIds and t.datetime >= :startDate and t.datetime <= :endDate")
+	BigDecimal getCategoriesTotal(@Param("userId") int userId, @Param("categoryIds") Collection<Integer> categoryIds,
+								  @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 }

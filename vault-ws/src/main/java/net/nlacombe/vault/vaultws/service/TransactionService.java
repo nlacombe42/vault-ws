@@ -6,6 +6,7 @@ import net.nlacombe.vault.vaultws.api.dto.Transaction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public interface TransactionService
@@ -21,4 +22,6 @@ public interface TransactionService
 	PaginationResponse<Transaction> searchTransactions(int userId, SearchTransactionsRequest searchTransactionsRequest);
 
 	BigDecimal getCategoryTotal(int userId, int categoryId, Instant startDate, Instant endDate);
+
+	BigDecimal getCategoriesTotal(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate);
 }

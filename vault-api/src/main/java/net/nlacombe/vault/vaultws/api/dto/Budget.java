@@ -6,7 +6,7 @@ import java.time.Instant;
 public class Budget
 {
 	private int budgetId;
-	private int categoryId;
+	private Integer categoryId;
 	private BudgetType budgetType;
 	private Instant startDate;
 	private Instant endDate;
@@ -23,12 +23,12 @@ public class Budget
 		this.budgetId = budgetId;
 	}
 
-	public int getCategoryId()
+	public Integer getCategoryId()
 	{
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId)
+	public void setCategoryId(Integer categoryId)
 	{
 		this.categoryId = categoryId;
 	}

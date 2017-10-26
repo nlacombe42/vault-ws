@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.Instant;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -43,5 +44,15 @@ public class BudgetWebServiceImpl implements BudgetWebService
 		Instant endDate = Instant.parse(endDateText);
 
 		return budgetService.getBudgets(userId, startDate, endDate);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public Budget getMonthEverythingElseBudget(String monthIsoString)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+		YearMonth month = YearMonth.parse(monthIsoString);
+
+		return budgetService.getMonthEverythingElseBudget(userId, month);
 	}
 }
