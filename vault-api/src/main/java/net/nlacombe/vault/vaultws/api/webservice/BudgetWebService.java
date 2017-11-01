@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
+import net.nlacombe.vault.vaultws.api.dto.MonthStats;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
@@ -31,4 +32,8 @@ public interface BudgetWebService
 	@GET
 	@Path("/month/{monthIsoString}/everythingElse")
 	Budget getMonthEverythingElseBudget(@PathParam("monthIsoString") String monthIsoString);
+
+	@GET
+	@Path("/month/{monthIsoString}/stats")
+	MonthStats getMonthStats(@PathParam("monthIsoString") String monthIsoString);
 }

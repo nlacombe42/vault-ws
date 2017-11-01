@@ -3,14 +3,19 @@ package net.nlacombe.vault.vaultws.service.impl;
 import net.nlacombe.commonlib.util.DateUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
 import net.nlacombe.vault.vaultws.api.dto.BudgetType;
+import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
+import net.nlacombe.vault.vaultws.api.dto.MonthStats;
+import net.nlacombe.vault.vaultws.domain.UserConfig;
 import net.nlacombe.vault.vaultws.entity.BudgetEntity;
 import net.nlacombe.vault.vaultws.entity.CategoryEntity;
 import net.nlacombe.vault.vaultws.mapper.BudgetMapper;
 import net.nlacombe.vault.vaultws.repositorty.BudgetRepository;
 import net.nlacombe.vault.vaultws.service.BudgetService;
 import net.nlacombe.vault.vaultws.service.CategoryAccessService;
+import net.nlacombe.vault.vaultws.service.CategoryService;
 import net.nlacombe.vault.vaultws.service.TransactionService;
+import net.nlacombe.vault.vaultws.service.UserConfigService;
 import net.nlacombe.wsutils.restexception.exception.InvalidInputRestException;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,7 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,14 +35,18 @@ public class BudgetServiceImpl implements BudgetService
 	private CategoryAccessService categoryAccessService;
 	private BudgetMapper budgetMapper;
 	private TransactionService transactionService;
+	private CategoryService categoryService;
+	private UserConfigService userConfigService;
 
 	@Inject
-	public BudgetServiceImpl(BudgetRepository budgetRepository, CategoryAccessService categoryAccessService, BudgetMapper budgetMapper, TransactionService transactionService)
+	public BudgetServiceImpl(BudgetRepository budgetRepository, CategoryAccessService categoryAccessService, BudgetMapper budgetMapper, TransactionService transactionService, CategoryService categoryService, UserConfigService userConfigService)
 	{
 		this.budgetRepository = budgetRepository;
 		this.categoryAccessService = categoryAccessService;
 		this.budgetMapper = budgetMapper;
 		this.transactionService = transactionService;
+		this.categoryService = categoryService;
+		this.userConfigService = userConfigService;
 	}
 
 	@Override
@@ -51,8 +61,8 @@ public class BudgetServiceImpl implements BudgetService
 		budgetEntity.setUserId(userId);
 		budgetEntity.setBudgetTypeCode(BudgetType.MONTH.getCode());
 		budgetEntity.setPlannedMaxAmount(monthBudgetCreationRequest.getPlannedMaxAmount());
-		budgetEntity.setStartDate(DateUtil.getStartOfMonthUtc(monthBudgetCreationRequest.getMonth()));
-		budgetEntity.setEndDate(DateUtil.getLastSecondBeforeNextMonthUtc(monthBudgetCreationRequest.getMonth()));
+		budgetEntity.setStartDate(getStartOfMonth(userId, monthBudgetCreationRequest.getMonth()));
+		budgetEntity.setEndDate(getLastSecondBeforeNextMonth(userId, monthBudgetCreationRequest.getMonth()));
 
 		budgetEntity = budgetRepository.save(budgetEntity);
 
@@ -73,8 +83,8 @@ public class BudgetServiceImpl implements BudgetService
 	@Override
 	public Budget getMonthEverythingElseBudget(int userId, YearMonth month)
 	{
-		Instant startDate = DateUtil.getStartOfMonthUtc(month);
-		Instant endDate = DateUtil.getLastSecondBeforeNextMonthUtc(month);
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
 		BigDecimal budgetCurrentAmount = getEverythingElseBudgetCurrentAmount(userId, startDate, endDate);
 
 		BudgetEntity everythingElseBudgetEntity = budgetRepository.findByRangeAndDoesNotHaveCategory(userId, startDate, endDate);
@@ -83,6 +93,34 @@ public class BudgetServiceImpl implements BudgetService
 			everythingElseBudgetEntity = createEverythingElseBudget(userId, startDate, endDate);
 
 		return budgetMapper.mapToDto(everythingElseBudgetEntity, budgetCurrentAmount);
+	}
+
+	@Override
+	public MonthStats getMonthStats(int userId, YearMonth month)
+	{
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
+
+		BigDecimal totalPlannedMaxAmount = budgetRepository.getTotalPlannedMaxAmount(userId, startDate, endDate);
+		totalPlannedMaxAmount = totalPlannedMaxAmount == null ? BigDecimal.ZERO : totalPlannedMaxAmount;
+
+		BigDecimal currentAmount = transactionService.getTotalAmount(userId, startDate, endDate);
+
+		return new MonthStats(totalPlannedMaxAmount, currentAmount);
+	}
+
+	private Instant getStartOfMonth(int userId, YearMonth yearMonth)
+	{
+		UserConfig userConfig = userConfigService.getUserConfig(userId);
+
+		return DateUtil.getStartOfMonth(yearMonth, TimeZone.getTimeZone(userConfig.getTimezone()));
+	}
+
+	private Instant getLastSecondBeforeNextMonth(int userId, YearMonth yearMonth)
+	{
+		UserConfig userConfig = userConfigService.getUserConfig(userId);
+
+		return DateUtil.getLastSecondBeforeNextMonth(yearMonth, TimeZone.getTimeZone(userConfig.getTimezone()));
 	}
 
 	private BudgetEntity createEverythingElseBudget(int userId, Instant startDate, Instant endDate)
@@ -107,9 +145,18 @@ public class BudgetServiceImpl implements BudgetService
 
 	private Set<Integer> getUnbudgetedCategoryIds(int userId, Instant startDate, Instant endDate)
 	{
-		return getBudgets(userId, startDate, endDate).stream()
+		Set<Integer> allCategoryIds =
+				categoryService.getCategories(userId).stream()
+						.map(Category::getCategoryId)
+						.collect(Collectors.toSet());
+
+		Set<Integer> budgetedCategoyIds = getBudgets(userId, startDate, endDate).stream()
 				.map(Budget::getCategoryId)
 				.collect(Collectors.toSet());
+
+		allCategoryIds.removeAll(budgetedCategoyIds);
+
+		return allCategoryIds;
 	}
 
 	private BigDecimal getBudgetCurrentAmount(int userId, BudgetEntity budgetEntity)
@@ -120,8 +167,8 @@ public class BudgetServiceImpl implements BudgetService
 
 	private void validateNoDuplicateCategoryForMonth(int userId, YearMonth month, int categoryId)
 	{
-		Instant startDate = DateUtil.getStartOfMonthUtc(month);
-		Instant endDate = DateUtil.getLastSecondBeforeNextMonthUtc(month);
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
 
 		if (budgetRepository.existsByRangeAndCategoryId(userId, startDate, endDate, categoryId))
 			throw new InvalidInputRestException("Month already contains budget with category ID: " + categoryId);

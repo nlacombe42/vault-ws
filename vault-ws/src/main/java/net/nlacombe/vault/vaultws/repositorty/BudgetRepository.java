@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.stream.Stream;
 
@@ -38,4 +39,12 @@ public interface BudgetRepository extends JpaRepository<BudgetEntity, Integer>
 									   @Param("startDate") Instant startDate,
 									   @Param("endDate") Instant endDate,
 									   @Param("categoryId") int categoryId);
+
+	@Query("select sum(b.plannedMaxAmount) from BudgetEntity b where b.userId = :userId and " +
+			"((b.startDate >= :startDate and b.startDate <= :endDate) or " +
+			"(b.endDate >= :startDate and b.endDate <= :endDate) or " +
+			"(b.startDate <= :startDate and b.endDate >= :endDate))")
+	BigDecimal getTotalPlannedMaxAmount(@Param("userId") int userId,
+										@Param("startDate") Instant startDate,
+										@Param("endDate") Instant endDate);
 }

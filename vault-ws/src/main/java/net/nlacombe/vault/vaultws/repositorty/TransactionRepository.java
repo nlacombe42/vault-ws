@@ -33,4 +33,8 @@ public interface TransactionRepository extends org.springframework.data.reposito
 			"t.category.categoryId in :categoryIds and t.datetime >= :startDate and t.datetime <= :endDate")
 	BigDecimal getCategoriesTotal(@Param("userId") int userId, @Param("categoryIds") Collection<Integer> categoryIds,
 								  @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
+
+	@Query("select sum(t.amount) from TransactionEntity t " +
+			"where t.account.userId = :userId and t.datetime >= :startDate and t.datetime <= :endDate")
+	BigDecimal getTotalAmount(@Param("userId") int userId, @Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 }

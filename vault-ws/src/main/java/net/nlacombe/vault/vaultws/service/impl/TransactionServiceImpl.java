@@ -115,6 +115,14 @@ public class TransactionServiceImpl implements TransactionService
 		return getCategoriesTotal(userId, Collections.singleton(categoryId), startDate, endDate);
 	}
 
+	@Override
+	public BigDecimal getTotalAmount(int userId, Instant startDate, Instant endDate)
+	{
+		BigDecimal totalAmount = transactionRepository.getTotalAmount(userId, startDate, endDate);
+
+		return totalAmount == null ? BigDecimal.ZERO : totalAmount;
+	}
+
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)
 	{
 		Page<TransactionEntity> transactionsPage;
