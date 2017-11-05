@@ -3,7 +3,7 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
-import net.nlacombe.vault.vaultws.api.dto.MonthStats;
+import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 import net.nlacombe.vault.vaultws.api.webservice.BudgetWebService;
 import net.nlacombe.vault.vaultws.service.BudgetService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.time.Instant;
 import java.time.YearMonth;
-import java.util.List;
 
 @Service
 @Transactional
@@ -38,32 +36,11 @@ public class BudgetWebServiceImpl implements BudgetWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
-	public List<Budget> getBudgets(String startDateText, String endDateText)
-	{
-		int userId = AuthUtil.getAuthenticatedUser().getUserId();
-		Instant startDate = Instant.parse(startDateText);
-		Instant endDate = Instant.parse(endDateText);
-
-		return budgetService.getBudgets(userId, startDate, endDate);
-	}
-
-	@PreAuthorize("isAuthenticated()")
-	@Override
-	public Budget getMonthEverythingElseBudget(String monthIsoString)
+	public MonthBudgetsInfo getMonthBudgetsInfo(String monthIsoString)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 		YearMonth month = YearMonth.parse(monthIsoString);
 
-		return budgetService.getMonthEverythingElseBudget(userId, month);
-	}
-
-	@PreAuthorize("isAuthenticated()")
-	@Override
-	public MonthStats getMonthStats(String monthIsoString)
-	{
-		int userId = AuthUtil.getAuthenticatedUser().getUserId();
-		YearMonth month = YearMonth.parse(monthIsoString);
-
-		return budgetService.getMonthStats(userId, month);
+		return budgetService.getMonthBudgetsInfo(userId, month);
 	}
 }

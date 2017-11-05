@@ -12,6 +12,7 @@ public class Budget
 	private Instant endDate;
 	private BigDecimal plannedMaxAmount;
 	private BigDecimal currentAmount;
+	private boolean income;
 
 	public int getBudgetId()
 	{
@@ -81,5 +82,10 @@ public class Budget
 	public void setCurrentAmount(BigDecimal currentAmount)
 	{
 		this.currentAmount = currentAmount;
+	}
+
+	public boolean isIncome()
+	{
+		return income;
 	}
 }

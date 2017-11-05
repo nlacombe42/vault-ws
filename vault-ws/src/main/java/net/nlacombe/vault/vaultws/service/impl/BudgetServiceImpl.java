@@ -5,6 +5,7 @@ import net.nlacombe.vault.vaultws.api.dto.Budget;
 import net.nlacombe.vault.vaultws.api.dto.BudgetType;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
+import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 import net.nlacombe.vault.vaultws.api.dto.MonthStats;
 import net.nlacombe.vault.vaultws.domain.UserConfig;
 import net.nlacombe.vault.vaultws.entity.BudgetEntity;
@@ -63,6 +64,7 @@ public class BudgetServiceImpl implements BudgetService
 		budgetEntity.setPlannedMaxAmount(monthBudgetCreationRequest.getPlannedMaxAmount());
 		budgetEntity.setStartDate(getStartOfMonth(userId, monthBudgetCreationRequest.getMonth()));
 		budgetEntity.setEndDate(getLastSecondBeforeNextMonth(userId, monthBudgetCreationRequest.getMonth()));
+		budgetEntity.setIncome(monthBudgetCreationRequest.isIncome());
 
 		budgetEntity = budgetRepository.save(budgetEntity);
 
@@ -72,31 +74,42 @@ public class BudgetServiceImpl implements BudgetService
 	}
 
 	@Override
-	public List<Budget> getBudgets(int userId, Instant startDate, Instant endDate)
+	public MonthBudgetsInfo getMonthBudgetsInfo(int userId, YearMonth month)
 	{
-		return budgetRepository.findByRangeAndHasCategory(userId, startDate, endDate)
+		MonthStats monthStats = getMonthStats(userId, month);
+		List<Budget> incomeBudgets = getBudgets(userId, month, true);
+		List<Budget> spendingBudgets = getBudgets(userId, month, false);
+		Budget unbudgeted = getMonthUnbudgeted(userId, month);
+
+		return new MonthBudgetsInfo(monthStats, incomeBudgets, spendingBudgets, unbudgeted);
+	}
+
+	private List<Budget> getBudgets(int userId, YearMonth month, boolean income)
+	{
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
+
+		return budgetRepository.findByRangeAndHasCategory(userId, startDate, endDate, income)
 				.map(budgetEntity ->
 						budgetMapper.mapToDto(budgetEntity, getBudgetCurrentAmount(userId, budgetEntity)))
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public Budget getMonthEverythingElseBudget(int userId, YearMonth month)
+	private Budget getMonthUnbudgeted(int userId, YearMonth month)
 	{
 		Instant startDate = getStartOfMonth(userId, month);
 		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
-		BigDecimal budgetCurrentAmount = getEverythingElseBudgetCurrentAmount(userId, startDate, endDate);
+		BigDecimal budgetCurrentAmount = getUnbudgetedCurrentAmount(userId, month);
 
-		BudgetEntity everythingElseBudgetEntity = budgetRepository.findByRangeAndDoesNotHaveCategory(userId, startDate, endDate);
+		BudgetEntity unbudgetedEntity = budgetRepository.findSpendingByRangeAndDoesNotHaveCategory(userId, startDate, endDate);
 
-		if (everythingElseBudgetEntity == null)
-			everythingElseBudgetEntity = createEverythingElseBudget(userId, startDate, endDate);
+		if (unbudgetedEntity == null)
+			unbudgetedEntity = createUnbudgetedBudget(userId, startDate, endDate);
 
-		return budgetMapper.mapToDto(everythingElseBudgetEntity, budgetCurrentAmount);
+		return budgetMapper.mapToDto(unbudgetedEntity, budgetCurrentAmount);
 	}
 
-	@Override
-	public MonthStats getMonthStats(int userId, YearMonth month)
+	private MonthStats getMonthStats(int userId, YearMonth month)
 	{
 		Instant startDate = getStartOfMonth(userId, month);
 		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
@@ -123,7 +136,7 @@ public class BudgetServiceImpl implements BudgetService
 		return DateUtil.getLastSecondBeforeNextMonth(yearMonth, TimeZone.getTimeZone(userConfig.getTimezone()));
 	}
 
-	private BudgetEntity createEverythingElseBudget(int userId, Instant startDate, Instant endDate)
+	private BudgetEntity createUnbudgetedBudget(int userId, Instant startDate, Instant endDate)
 	{
 		BudgetEntity everythingElseBudgetEntity = new BudgetEntity();
 		everythingElseBudgetEntity.setCategory(null);
@@ -136,21 +149,23 @@ public class BudgetServiceImpl implements BudgetService
 		return budgetRepository.save(everythingElseBudgetEntity);
 	}
 
-	private BigDecimal getEverythingElseBudgetCurrentAmount(int userId, Instant startDate, Instant endDate)
+	private BigDecimal getUnbudgetedCurrentAmount(int userId, YearMonth month)
 	{
-		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, startDate, endDate);
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
+		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, month);
 
 		return transactionService.getCategoriesTotal(userId, unbudgetedCategoryIds, startDate, endDate);
 	}
 
-	private Set<Integer> getUnbudgetedCategoryIds(int userId, Instant startDate, Instant endDate)
+	private Set<Integer> getUnbudgetedCategoryIds(int userId, YearMonth month)
 	{
 		Set<Integer> allCategoryIds =
 				categoryService.getCategories(userId).stream()
 						.map(Category::getCategoryId)
 						.collect(Collectors.toSet());
 
-		Set<Integer> budgetedCategoyIds = getBudgets(userId, startDate, endDate).stream()
+		Set<Integer> budgetedCategoyIds = getBudgets(userId, month, false).stream()
 				.map(Budget::getCategoryId)
 				.collect(Collectors.toSet());
 

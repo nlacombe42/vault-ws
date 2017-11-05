@@ -8,6 +8,7 @@ public class MonthBudgetCreationRequest
 	private int categoryId;
 	private YearMonth month;
 	private BigDecimal plannedMaxAmount;
+	private boolean income;
 
 	public int getCategoryId()
 	{
@@ -37,5 +38,15 @@ public class MonthBudgetCreationRequest
 	public void setPlannedMaxAmount(BigDecimal plannedMaxAmount)
 	{
 		this.plannedMaxAmount = plannedMaxAmount;
+	}
+
+	public boolean isIncome()
+	{
+		return income;
+	}
+
+	public void setIncome(boolean income)
+	{
+		this.income = income;
 	}
 }

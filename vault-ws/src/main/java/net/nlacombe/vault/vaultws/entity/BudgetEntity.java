@@ -27,6 +27,7 @@ public class BudgetEntity
 	private Instant endDate;
 	private BigDecimal plannedMaxAmount;
 	private String budgetTypeCode;
+	private boolean income;
 
 	public int getBudgetId()
 	{
@@ -96,5 +97,15 @@ public class BudgetEntity
 	public void setBudgetTypeCode(String budgetTypeCode)
 	{
 		this.budgetTypeCode = budgetTypeCode;
+	}
+
+	public boolean isIncome()
+	{
+		return income;
+	}
+
+	public void setIncome(boolean income)
+	{
+		this.income = income;
 	}
 }
