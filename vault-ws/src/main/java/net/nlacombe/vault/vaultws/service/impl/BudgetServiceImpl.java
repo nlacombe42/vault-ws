@@ -7,6 +7,7 @@ import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 import net.nlacombe.vault.vaultws.api.dto.MonthStats;
+import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.domain.UserConfig;
 import net.nlacombe.vault.vaultws.entity.BudgetEntity;
 import net.nlacombe.vault.vaultws.entity.CategoryEntity;
@@ -18,6 +19,7 @@ import net.nlacombe.vault.vaultws.service.CategoryService;
 import net.nlacombe.vault.vaultws.service.TransactionService;
 import net.nlacombe.vault.vaultws.service.UserConfigService;
 import net.nlacombe.wsutils.restexception.exception.InvalidInputRestException;
+import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -82,6 +84,21 @@ public class BudgetServiceImpl implements BudgetService
 		Budget unbudgeted = getMonthUnbudgeted(userId, month);
 
 		return new MonthBudgetsInfo(monthStats, incomeBudgets, spendingBudgets, unbudgeted);
+	}
+
+	@Override
+	public List<Transaction> getBudgetTransactions(int userId, int budgetId)
+	{
+		BudgetEntity budgetEntity = getBudget(userId, budgetId);
+		Integer categoryId = budgetEntity.getCategory() == null ? null : budgetEntity.getCategory().getCategoryId();
+
+		return transactionService.getTransactions(userId, categoryId, budgetEntity.getStartDate(), budgetEntity.getEndDate());
+	}
+
+	private BudgetEntity getBudget(int userId, int budgetId)
+	{
+		return budgetRepository.findByUserIdAndBudgetId(userId, budgetId)
+				.orElseThrow(() -> new NotFoundRestException("Budget with user ID \"" + userId + "\" and budget ID \"" + budgetId + "\" not found."));
 	}
 
 	private List<Budget> getBudgets(int userId, YearMonth month, boolean income)

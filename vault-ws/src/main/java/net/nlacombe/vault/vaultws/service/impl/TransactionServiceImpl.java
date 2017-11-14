@@ -123,6 +123,14 @@ public class TransactionServiceImpl implements TransactionService
 		return totalAmount == null ? BigDecimal.ZERO : totalAmount;
 	}
 
+	@Override
+	public List<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate)
+	{
+		return transactionRepository.getTransactions(userId, categoryId, startDate, endDate)
+				.map(transactionMapper::mapToDto)
+				.collect(Collectors.toList());
+	}
+
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)
 	{
 		Page<TransactionEntity> transactionsPage;

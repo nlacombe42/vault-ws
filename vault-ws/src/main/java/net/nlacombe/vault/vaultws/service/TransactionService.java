@@ -26,4 +26,6 @@ public interface TransactionService
 	BigDecimal getCategoriesTotal(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate);
 
 	BigDecimal getTotalAmount(int userId, Instant startDate, Instant endDate);
+
+	List<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate);
 }

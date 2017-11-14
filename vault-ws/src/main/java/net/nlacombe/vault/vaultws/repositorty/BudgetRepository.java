@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Repository
@@ -51,4 +52,6 @@ public interface BudgetRepository extends JpaRepository<BudgetEntity, Integer>
 	BigDecimal getTotalPlannedMaxAmount(@Param("userId") int userId,
 										@Param("startDate") Instant startDate,
 										@Param("endDate") Instant endDate);
+
+	Optional<BudgetEntity> findByUserIdAndBudgetId(int userId, int budgetId);
 }
