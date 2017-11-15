@@ -6,13 +6,19 @@ buildscript {
 	dependencies {
 		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE'
 		classpath 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
-		classpath 'se.transmode.gradle:gradle-docker:1.2'
+		classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
 	}
 }
 
 apply plugin: 'org.springframework.boot'
-apply plugin: 'docker'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+def awsEcrUrl = '118533919239.dkr.ecr.us-east-1.amazonaws.com'
+def dockerRepo = "${awsEcrUrl}/nlacombe"
 
 dependencyManagement {
 	imports {
@@ -46,13 +52,20 @@ dependencies {
 	runtime 'ch.qos.logback:logback-classic:1.2.3'
 }
 
-task buildDocker(type: Docker, dependsOn: build) {
-	tag = "${project.name}"
-	dockerfile = file('src/main/docker/Dockerfile')
-	doFirst {
-		copy {
-			from jar
-			into stageDir
-		}
+task createDockerContext(type: Copy, dependsOn: assemble) {
+	from('src/main/docker')
+	from('build/libs') {
+		include "*.jar"
 	}
+
+	into 'build/docker'
+}
+
+task buildDockerImage(type: DockerBuildImage, dependsOn: createDockerContext) {
+	inputDir = project.file('build/docker')
+	tag = "${dockerRepo}:${project.name}-${project.version}"
+}
+
+task pushDockerImage(type: DockerPushImage, dependsOn: buildDockerImage) {
+	imageName = buildDockerImage.tag
 }
