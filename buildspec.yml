@@ -13,7 +13,7 @@ phases:
       - export BUILD_ID=`date -u +%s`
       - echo "Build ID (UTC timestamp in seconds) $BUILD_ID"
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --no-include-email --registry-ids 118533919239)
+      - $(aws ecr get-login --registry-ids 118533919239)
   build:
     commands:
       - ./gradlew check pushDockerImage
