@@ -1,9 +1,6 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - apt-get update -y
   pre_build:
     commands:
       - export BUILD_ID=`date -u +%s`
