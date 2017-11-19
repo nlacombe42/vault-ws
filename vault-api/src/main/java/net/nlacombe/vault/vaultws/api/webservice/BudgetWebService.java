@@ -1,10 +1,10 @@
 package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.BudgetWithTransactions;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
-import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
@@ -36,6 +36,6 @@ public interface BudgetWebService
 	List<Category> getUnbudgetedCategories(@PathParam("monthIsoString") String monthIsoString);
 
 	@GET
-	@Path("/{budgetId}/transactions")
-	List<Transaction> getBudgetTransactions(@PathParam("budgetId") int budgetId);
+	@Path("/{budgetId}")
+	BudgetWithTransactions getBudgetWithTransactions(@PathParam("budgetId") int budgetId);
 }
