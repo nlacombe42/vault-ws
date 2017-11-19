@@ -182,7 +182,9 @@ public class BudgetServiceImpl implements BudgetService
 		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
 		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, startDate, endDate);
 
-		return transactionService.getCategoriesTotal(userId, unbudgetedCategoryIds, startDate, endDate);
+		BigDecimal unbudgetedCurrentAmount = transactionService.getCategoriesTotal(userId, unbudgetedCategoryIds, startDate, endDate);
+
+		return unbudgetedCurrentAmount.negate();
 	}
 
 	private Stream<Transaction> getUnbudgetedTransactions(int userId, Instant startDate, Instant endDate)
