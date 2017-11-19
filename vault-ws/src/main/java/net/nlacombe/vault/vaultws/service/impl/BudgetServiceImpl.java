@@ -209,8 +209,13 @@ public class BudgetServiceImpl implements BudgetService
 
 	private BigDecimal getBudgetCurrentAmount(int userId, BudgetEntity budgetEntity)
 	{
-		return transactionService.getCategoryTotal(userId, budgetEntity.getCategory().getCategoryId(),
+		BigDecimal categoryTotal = transactionService.getCategoryTotal(userId, budgetEntity.getCategory().getCategoryId(),
 				budgetEntity.getStartDate(), budgetEntity.getEndDate());
+
+		if (!budgetEntity.isIncome())
+			categoryTotal = categoryTotal.negate();
+
+		return categoryTotal;
 	}
 
 	private void validateNoDuplicateCategoryForMonth(int userId, YearMonth month, int categoryId)
