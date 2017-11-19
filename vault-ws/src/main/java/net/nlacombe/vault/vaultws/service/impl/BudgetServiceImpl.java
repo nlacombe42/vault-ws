@@ -88,16 +88,23 @@ public class BudgetServiceImpl implements BudgetService
 	}
 
 	@Override
-	public List<Transaction> getBudgetTransactions(int userId, int budgetId)
+	public Stream<Transaction> getBudgetTransactions(int userId, int budgetId)
 	{
 		BudgetEntity budgetEntity = getBudget(userId, budgetId);
 
 		if (isUnbudgetedBudget(budgetEntity))
-			return getUnbudgetedTransactions(userId, budgetEntity.getStartDate(), budgetEntity.getEndDate())
-					.collect(Collectors.toList());
+			return getUnbudgetedTransactions(userId, budgetEntity.getStartDate(), budgetEntity.getEndDate());
 		else
-			return transactionService.getTransactions(userId, budgetEntity.getCategory().getCategoryId(), budgetEntity.getStartDate(), budgetEntity.getEndDate())
-					.collect(Collectors.toList());
+			return transactionService.getTransactions(userId, budgetEntity.getCategory().getCategoryId(), budgetEntity.getStartDate(), budgetEntity.getEndDate());
+	}
+
+	@Override
+	public Stream<Category> getUnbudgetedCategories(int userId, YearMonth month)
+	{
+		Instant startDate = getStartOfMonth(userId, month);
+		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
+
+		return categoryService.getCategories(getUnbudgetedCategoryIds(userId, startDate, endDate));
 	}
 
 	private boolean isUnbudgetedBudget(BudgetEntity budgetEntity)

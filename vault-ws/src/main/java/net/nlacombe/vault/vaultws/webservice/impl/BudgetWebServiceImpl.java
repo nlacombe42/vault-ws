@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 
 import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,10 +50,22 @@ public class BudgetWebServiceImpl implements BudgetWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
+	public List<Category> getUnbudgetedCategories(String monthIsoString)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+		YearMonth month = YearMonth.parse(monthIsoString);
+
+		return budgetService.getUnbudgetedCategories(userId, month)
+				.collect(Collectors.toList());
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
 	public List<Transaction> getBudgetTransactions(int budgetId)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
-		return budgetService.getBudgetTransactions(userId, budgetId);
+		return budgetService.getBudgetTransactions(userId, budgetId)
+				.collect(Collectors.toList());
 	}
 }

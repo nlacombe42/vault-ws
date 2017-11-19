@@ -7,6 +7,7 @@ import net.nlacombe.vault.vaultws.service.CategoryService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 @Service
@@ -26,6 +27,13 @@ public class CategoryServiceImpl implements CategoryService
 	public Stream<Category> getCategories(int userId)
 	{
 		return categoryRepository.findByUserId(userId)
+				.map(categoryMapper::mapToDto);
+	}
+
+	@Override
+	public Stream<Category> getCategories(Collection<Integer> categoryIds)
+	{
+		return categoryRepository.findByCategoryIdIn(categoryIds)
 				.map(categoryMapper::mapToDto);
 	}
 }

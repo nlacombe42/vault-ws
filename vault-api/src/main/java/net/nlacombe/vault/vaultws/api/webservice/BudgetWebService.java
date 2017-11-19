@@ -1,6 +1,7 @@
 package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
@@ -29,6 +30,10 @@ public interface BudgetWebService
 	@GET
 	@Path("/month/{monthIsoString}/info")
 	MonthBudgetsInfo getMonthBudgetsInfo(@PathParam("monthIsoString") String monthIsoString);
+
+	@GET
+	@Path("/month/{monthIsoString}/unbudgetedCategories")
+	List<Category> getUnbudgetedCategories(@PathParam("monthIsoString") String monthIsoString);
 
 	@GET
 	@Path("/{budgetId}/transactions")
