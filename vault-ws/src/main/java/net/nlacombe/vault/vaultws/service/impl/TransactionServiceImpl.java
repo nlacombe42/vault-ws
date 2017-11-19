@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionServiceImpl implements TransactionService
@@ -124,11 +125,16 @@ public class TransactionServiceImpl implements TransactionService
 	}
 
 	@Override
-	public List<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate)
+	public Stream<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate)
 	{
-		return transactionRepository.getTransactions(userId, categoryId, startDate, endDate)
-				.map(transactionMapper::mapToDto)
-				.collect(Collectors.toList());
+		return getTransactions(userId, Collections.singletonList(categoryId), startDate, endDate);
+	}
+
+	@Override
+	public Stream<Transaction> getTransactions(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate)
+	{
+		return transactionRepository.getTransactions(userId, categoryIds, startDate, endDate)
+				.map(transactionMapper::mapToDto);
 	}
 
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)

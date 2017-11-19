@@ -2,9 +2,9 @@ package net.nlacombe.vault.vaultws.service;
 
 import net.nlacombe.vault.vaultws.api.dto.Category;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface CategoryService
 {
-	List<Category> getCategories(int userId);
+	Stream<Category> getCategories(int userId);
 }

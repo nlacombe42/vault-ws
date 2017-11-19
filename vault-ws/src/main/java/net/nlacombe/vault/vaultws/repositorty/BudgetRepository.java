@@ -29,9 +29,9 @@ public interface BudgetRepository extends JpaRepository<BudgetEntity, Integer>
 			"((b.startDate >= :startDate and b.startDate <= :endDate) or " +
 			"(b.endDate >= :startDate and b.endDate <= :endDate) or " +
 			"(b.startDate <= :startDate and b.endDate >= :endDate))")
-	BudgetEntity findSpendingByRangeAndDoesNotHaveCategory(@Param("userId") int userId,
-														   @Param("startDate") Instant startDate,
-														   @Param("endDate") Instant endDate);
+	BudgetEntity findUnbudgetedBudget(@Param("userId") int userId,
+									  @Param("startDate") Instant startDate,
+									  @Param("endDate") Instant endDate);
 
 	@Query("select CASE WHEN COUNT(b) > 0 THEN true ELSE false END " +
 			"from BudgetEntity b where b.userId = :userId and " +
@@ -54,4 +54,13 @@ public interface BudgetRepository extends JpaRepository<BudgetEntity, Integer>
 										@Param("endDate") Instant endDate);
 
 	Optional<BudgetEntity> findByUserIdAndBudgetId(int userId, int budgetId);
+
+	@Query("select b.category.categoryId from BudgetEntity b where b.userId = :userId and " +
+			"b.category is not null and " +
+			"((b.startDate >= :startDate and b.startDate <= :endDate) or " +
+			"(b.endDate >= :startDate and b.endDate <= :endDate) or " +
+			"(b.startDate <= :startDate and b.endDate >= :endDate))")
+	Stream<Integer> findBudgetedCategoryIds(@Param("userId") int userId,
+											@Param("startDate") Instant startDate,
+											@Param("endDate") Instant endDate);
 }

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class BudgetServiceImpl implements BudgetService
@@ -81,7 +82,7 @@ public class BudgetServiceImpl implements BudgetService
 		MonthStats monthStats = getMonthStats(userId, month);
 		List<Budget> incomeBudgets = getBudgets(userId, month, true);
 		List<Budget> spendingBudgets = getBudgets(userId, month, false);
-		Budget unbudgeted = getMonthUnbudgeted(userId, month);
+		Budget unbudgeted = getMonthUnbudgetedBudget(userId, month);
 
 		return new MonthBudgetsInfo(monthStats, incomeBudgets, spendingBudgets, unbudgeted);
 	}
@@ -90,9 +91,18 @@ public class BudgetServiceImpl implements BudgetService
 	public List<Transaction> getBudgetTransactions(int userId, int budgetId)
 	{
 		BudgetEntity budgetEntity = getBudget(userId, budgetId);
-		Integer categoryId = budgetEntity.getCategory() == null ? null : budgetEntity.getCategory().getCategoryId();
 
-		return transactionService.getTransactions(userId, categoryId, budgetEntity.getStartDate(), budgetEntity.getEndDate());
+		if (isUnbudgetedBudget(budgetEntity))
+			return getUnbudgetedTransactions(userId, budgetEntity.getStartDate(), budgetEntity.getEndDate())
+					.collect(Collectors.toList());
+		else
+			return transactionService.getTransactions(userId, budgetEntity.getCategory().getCategoryId(), budgetEntity.getStartDate(), budgetEntity.getEndDate())
+					.collect(Collectors.toList());
+	}
+
+	private boolean isUnbudgetedBudget(BudgetEntity budgetEntity)
+	{
+		return budgetEntity.getCategory() == null;
 	}
 
 	private BudgetEntity getBudget(int userId, int budgetId)
@@ -112,13 +122,13 @@ public class BudgetServiceImpl implements BudgetService
 				.collect(Collectors.toList());
 	}
 
-	private Budget getMonthUnbudgeted(int userId, YearMonth month)
+	private Budget getMonthUnbudgetedBudget(int userId, YearMonth month)
 	{
 		Instant startDate = getStartOfMonth(userId, month);
 		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
 		BigDecimal budgetCurrentAmount = getUnbudgetedCurrentAmount(userId, month);
 
-		BudgetEntity unbudgetedEntity = budgetRepository.findSpendingByRangeAndDoesNotHaveCategory(userId, startDate, endDate);
+		BudgetEntity unbudgetedEntity = budgetRepository.findUnbudgetedBudget(userId, startDate, endDate);
 
 		if (unbudgetedEntity == null)
 			unbudgetedEntity = createUnbudgetedBudget(userId, startDate, endDate);
@@ -170,23 +180,29 @@ public class BudgetServiceImpl implements BudgetService
 	{
 		Instant startDate = getStartOfMonth(userId, month);
 		Instant endDate = getLastSecondBeforeNextMonth(userId, month);
-		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, month);
+		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, startDate, endDate);
 
 		return transactionService.getCategoriesTotal(userId, unbudgetedCategoryIds, startDate, endDate);
 	}
 
-	private Set<Integer> getUnbudgetedCategoryIds(int userId, YearMonth month)
+	private Stream<Transaction> getUnbudgetedTransactions(int userId, Instant startDate, Instant endDate)
+	{
+		Set<Integer> unbudgetedCategoryIds = getUnbudgetedCategoryIds(userId, startDate, endDate);
+
+		return transactionService.getTransactions(userId, unbudgetedCategoryIds, startDate, endDate);
+	}
+
+	private Set<Integer> getUnbudgetedCategoryIds(int userId, Instant startDate, Instant endDate)
 	{
 		Set<Integer> allCategoryIds =
-				categoryService.getCategories(userId).stream()
+				categoryService.getCategories(userId)
 						.map(Category::getCategoryId)
 						.collect(Collectors.toSet());
 
-		Set<Integer> budgetedCategoyIds = getBudgets(userId, month, false).stream()
-				.map(Budget::getCategoryId)
-				.collect(Collectors.toSet());
+		Set<Integer> budgetedCategoryIds =
+				budgetRepository.findBudgetedCategoryIds(userId, startDate, endDate).collect(Collectors.toSet());
 
-		allCategoryIds.removeAll(budgetedCategoyIds);
+		allCategoryIds.removeAll(budgetedCategoryIds);
 
 		return allCategoryIds;
 	}

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface TransactionService
 {
@@ -27,5 +28,7 @@ public interface TransactionService
 
 	BigDecimal getTotalAmount(int userId, Instant startDate, Instant endDate);
 
-	List<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate);
+	Stream<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate);
+
+	Stream<Transaction> getTransactions(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate);
 }

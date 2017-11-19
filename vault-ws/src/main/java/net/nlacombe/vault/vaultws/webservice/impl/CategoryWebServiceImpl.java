@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,6 +30,6 @@ public class CategoryWebServiceImpl implements CategoryWebService
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
-		return categoryService.getCategories(userId);
+		return categoryService.getCategories(userId).collect(Collectors.toList());
 	}
 }
