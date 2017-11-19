@@ -49,5 +49,9 @@ public interface TransactionWebService
 
 	@PUT
 	@Path("/{transactionId}/category")
-	void categorizeTransaction(@PathParam("transactionId") Integer transactionId, CategorizeRequest categorizeRequest);
+	void categorizeTransaction(@PathParam("transactionId") int transactionId, CategorizeRequest categorizeRequest);
+
+	@GET
+	@Path("/{transactionId}")
+	Transaction getTransaction(@PathParam("transactionId") int transactionId);
 }

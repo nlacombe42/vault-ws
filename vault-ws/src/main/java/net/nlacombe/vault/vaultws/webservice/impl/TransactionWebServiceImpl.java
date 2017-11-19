@@ -65,7 +65,7 @@ public class TransactionWebServiceImpl implements TransactionWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
-	public void categorizeTransaction(Integer transactionId, CategorizeRequest categorizeRequest)
+	public void categorizeTransaction(int transactionId, CategorizeRequest categorizeRequest)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
@@ -79,6 +79,15 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		return transactionService.searchTransactions(userId, searchTransactionsRequest);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public Transaction getTransaction(int transactionId)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		return transactionService.getTransaction(userId, transactionId);
 	}
 
 	private void validateUserHasAccount(int accountId, int userId)

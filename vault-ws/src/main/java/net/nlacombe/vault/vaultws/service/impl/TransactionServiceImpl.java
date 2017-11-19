@@ -137,6 +137,14 @@ public class TransactionServiceImpl implements TransactionService
 				.map(transactionMapper::mapToDto);
 	}
 
+	@Override
+	public Transaction getTransaction(int userId, int transactionId)
+	{
+		TransactionEntity transactionEntity = getTransactionEntity(userId, transactionId);
+
+		return transactionMapper.mapToDto(transactionEntity);
+	}
+
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)
 	{
 		Page<TransactionEntity> transactionsPage;

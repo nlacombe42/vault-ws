@@ -31,4 +31,6 @@ public interface TransactionService
 	Stream<Transaction> getTransactions(int userId, Integer categoryId, Instant startDate, Instant endDate);
 
 	Stream<Transaction> getTransactions(int userId, Collection<Integer> categoryIds, Instant startDate, Instant endDate);
+
+	Transaction getTransaction(int userId, int transactionId);
 }
