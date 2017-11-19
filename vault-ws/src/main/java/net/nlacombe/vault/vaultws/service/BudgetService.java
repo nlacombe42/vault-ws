@@ -6,6 +6,7 @@ import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetsInfo;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.stream.Stream;
 
@@ -18,4 +19,6 @@ public interface BudgetService
 	BudgetWithTransactions getBudgetWithTransactions(int userId, int budgetId);
 
 	Stream<Category> getUnbudgetedCategories(int userId, YearMonth month);
+
+	void updateBudgetPlannedMaxAmount(int userId, int budgetId, BigDecimal plannedMaxAmount);
 }

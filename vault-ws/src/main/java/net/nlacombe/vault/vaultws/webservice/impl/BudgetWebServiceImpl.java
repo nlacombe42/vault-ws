@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,5 +67,14 @@ public class BudgetWebServiceImpl implements BudgetWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		return budgetService.getBudgetWithTransactions(userId, budgetId);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public void updateBudgetPlannedMaxAmount(int budgetId, BigDecimal plannedMaxAmount)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		budgetService.updateBudgetPlannedMaxAmount(userId, budgetId, plannedMaxAmount);
 	}
 }

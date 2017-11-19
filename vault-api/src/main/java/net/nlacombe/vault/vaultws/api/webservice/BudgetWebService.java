@@ -11,10 +11,12 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.math.BigDecimal;
 import java.util.List;
 
 @FeignClient(serviceId = "vault-ws", path = VaultWsPathConstants.API_PATH_PREFIX)
@@ -38,4 +40,8 @@ public interface BudgetWebService
 	@GET
 	@Path("/{budgetId}")
 	BudgetWithTransactions getBudgetWithTransactions(@PathParam("budgetId") int budgetId);
+
+	@PUT
+	@Path("/{budgetId}/plannedMaxAmount")
+	void updateBudgetPlannedMaxAmount(@PathParam("budgetId") int budgetId, BigDecimal plannedMaxAmount);
 }

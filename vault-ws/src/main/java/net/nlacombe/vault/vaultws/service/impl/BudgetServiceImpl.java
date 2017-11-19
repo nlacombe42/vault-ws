@@ -115,6 +115,15 @@ public class BudgetServiceImpl implements BudgetService
 		return categoryService.getCategories(getUnbudgetedCategoryIds(userId, startDate, endDate));
 	}
 
+	@Override
+	public void updateBudgetPlannedMaxAmount(int userId, int budgetId, BigDecimal plannedMaxAmount)
+	{
+		BudgetEntity budgetEntity = getBudget(userId, budgetId);
+		budgetEntity.setPlannedMaxAmount(plannedMaxAmount);
+
+		budgetRepository.save(budgetEntity);
+	}
+
 	private boolean isUnbudgetedBudget(BudgetEntity budgetEntity)
 	{
 		return budgetEntity.getCategory() == null;
