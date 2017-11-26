@@ -19,6 +19,8 @@ public interface TransactionRepository extends org.springframework.data.reposito
 {
 	Optional<TransactionEntity> findOne(Integer transactionId);
 
+	void delete(TransactionEntity transactionEntity);
+
 	TransactionEntity save(TransactionEntity transactionEntity);
 
 	int countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(int accountId, Instant datetime, String description, BigDecimal amount);

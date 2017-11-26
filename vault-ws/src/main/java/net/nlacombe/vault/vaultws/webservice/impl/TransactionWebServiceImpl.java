@@ -90,6 +90,15 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		return transactionService.getTransaction(userId, transactionId);
 	}
 
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public void deleteTransaction(int transactionId)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		transactionService.deleteTransaction(userId, transactionId);
+	}
+
 	private void validateUserHasAccount(int accountId, int userId)
 	{
 		Account account = accountService.getAccount(accountId);

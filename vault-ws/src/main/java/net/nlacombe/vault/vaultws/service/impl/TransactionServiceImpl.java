@@ -145,6 +145,14 @@ public class TransactionServiceImpl implements TransactionService
 		return transactionMapper.mapToDto(transactionEntity);
 	}
 
+	@Override
+	public void deleteTransaction(int userId, int transactionId)
+	{
+		TransactionEntity transactionEntity = getTransactionEntity(userId, transactionId);
+
+		transactionRepository.delete(transactionEntity);
+	}
+
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)
 	{
 		Page<TransactionEntity> transactionsPage;
@@ -159,12 +167,12 @@ public class TransactionServiceImpl implements TransactionService
 
 	private TransactionEntity getTransactionEntity(int userId, int transactionId)
 	{
-		NotFoundRestException transcationNotFound = new NotFoundRestException("Transaction with ID " + transactionId + " not found for user ID " + userId);
+		NotFoundRestException transactionNotFound = new NotFoundRestException("Transaction with ID " + transactionId + " not found for user ID " + userId);
 
-		TransactionEntity transactionEntity = transactionRepository.findOne(transactionId).orElseThrow(() -> transcationNotFound);
+		TransactionEntity transactionEntity = transactionRepository.findOne(transactionId).orElseThrow(() -> transactionNotFound);
 
 		if (transactionEntity.getAccount().getUserId() != userId)
-			throw transcationNotFound;
+			throw transactionNotFound;
 
 		return transactionEntity;
 	}

@@ -9,6 +9,7 @@ import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -54,4 +55,8 @@ public interface TransactionWebService
 	@GET
 	@Path("/{transactionId}")
 	Transaction getTransaction(@PathParam("transactionId") int transactionId);
+
+	@DELETE
+	@Path("/{transactionId}")
+	void deleteTransaction(@PathParam("transactionId") int transactionId);
 }
