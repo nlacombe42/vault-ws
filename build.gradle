@@ -7,7 +7,7 @@ subprojects {
 	defaultTasks 'tasks'
 
 	group = 'net.nlacombe'
-	version = '8.2.0'
+	version = '8.2.1'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
