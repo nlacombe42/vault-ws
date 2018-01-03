@@ -8,6 +8,17 @@ public class UserConfig
 	private int userId;
 	private ZoneId timezone;
 
+	public UserConfig(int userConfigId, int userId, ZoneId timezone)
+	{
+		this.userConfigId = userConfigId;
+		this.userId = userId;
+		this.timezone = timezone;
+	}
+
+	public UserConfig()
+	{
+	}
+
 	public int getUserConfigId()
 	{
 		return userConfigId;

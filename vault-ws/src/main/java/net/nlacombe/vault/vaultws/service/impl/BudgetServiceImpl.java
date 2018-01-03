@@ -168,7 +168,7 @@ public class BudgetServiceImpl implements BudgetService
 		BigDecimal totalPlannedMaxAmount = budgetRepository.getTotalPlannedMaxAmount(userId, startDate, endDate);
 		totalPlannedMaxAmount = totalPlannedMaxAmount == null ? BigDecimal.ZERO : totalPlannedMaxAmount;
 
-		BigDecimal currentAmount = transactionService.getTotalAmount(userId, startDate, endDate).negate();
+		BigDecimal currentAmount = transactionService.getTotalAmount(userId, startDate, endDate);
 
 		return new MonthStats(totalPlannedMaxAmount, currentAmount);
 	}
