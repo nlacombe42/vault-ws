@@ -69,6 +69,7 @@ public class BudgetServiceImpl implements BudgetService
 		budgetEntity.setStartDate(getStartOfMonth(userId, monthBudgetCreationRequest.getMonth()));
 		budgetEntity.setEndDate(getLastSecondBeforeNextMonth(userId, monthBudgetCreationRequest.getMonth()));
 		budgetEntity.setIncome(monthBudgetCreationRequest.isIncome());
+		budgetEntity.setInvestment(monthBudgetCreationRequest.isInvestment());
 
 		budgetEntity = budgetRepository.save(budgetEntity);
 

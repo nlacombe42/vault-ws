@@ -9,6 +9,7 @@ public class MonthBudgetCreationRequest
 	private YearMonth month;
 	private BigDecimal plannedMaxAmount;
 	private boolean income;
+	private boolean investment;
 
 	public int getCategoryId()
 	{
@@ -48,5 +49,15 @@ public class MonthBudgetCreationRequest
 	public void setIncome(boolean income)
 	{
 		this.income = income;
+	}
+
+	public boolean isInvestment()
+	{
+		return investment;
+	}
+
+	public void setInvestment(boolean investment)
+	{
+		this.investment = investment;
 	}
 }

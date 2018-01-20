@@ -28,6 +28,7 @@ public class BudgetEntity
 	private BigDecimal plannedMaxAmount;
 	private String budgetTypeCode;
 	private boolean income;
+	private boolean investment;
 
 	public int getBudgetId()
 	{
@@ -107,5 +108,15 @@ public class BudgetEntity
 	public void setIncome(boolean income)
 	{
 		this.income = income;
+	}
+
+	public boolean isInvestment()
+	{
+		return investment;
+	}
+
+	public void setInvestment(boolean investment)
+	{
+		this.investment = investment;
 	}
 }

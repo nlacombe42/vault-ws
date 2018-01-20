@@ -13,6 +13,7 @@ public class Budget
 	private BigDecimal plannedMaxAmount;
 	private BigDecimal currentAmount;
 	private boolean income;
+	private boolean investment;
 
 	public int getBudgetId()
 	{
@@ -87,5 +88,20 @@ public class Budget
 	public boolean isIncome()
 	{
 		return income;
+	}
+
+	public void setIncome(boolean income)
+	{
+		this.income = income;
+	}
+
+	public boolean isInvestment()
+	{
+		return investment;
+	}
+
+	public void setInvestment(boolean investment)
+	{
+		this.investment = investment;
 	}
 }
