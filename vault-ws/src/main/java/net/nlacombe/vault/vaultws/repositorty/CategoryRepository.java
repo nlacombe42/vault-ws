@@ -13,4 +13,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 	Stream<CategoryEntity> findByUserId(int userId);
 
 	Stream<CategoryEntity> findByCategoryIdIn(Collection<Integer> categoryIds);
+
+	boolean existsByUserIdAndName(int userId, String name);
 }

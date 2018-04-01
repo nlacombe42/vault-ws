@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 
 import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Category;
+import net.nlacombe.vault.vaultws.api.dto.CategoryCreationRequest;
 import net.nlacombe.vault.vaultws.api.webservice.CategoryWebService;
 import net.nlacombe.vault.vaultws.service.CategoryService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,5 +32,14 @@ public class CategoryWebServiceImpl implements CategoryWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		return categoryService.getCategories(userId).collect(Collectors.toList());
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public Category createCategory(CategoryCreationRequest categoryCreationRequest)
+	{
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		return categoryService.createCategory(userId, categoryCreationRequest.getName());
 	}
 }

@@ -8,6 +8,8 @@ public class Category
 
 	private String name;
 
+	private int numberOfUses;
+
 	public int getCategoryId()
 	{
 		return categoryId;
@@ -36,5 +38,15 @@ public class Category
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public int getNumberOfUses()
+	{
+		return numberOfUses;
+	}
+
+	public void setNumberOfUses(int numberOfUses)
+	{
+		this.numberOfUses = numberOfUses;
 	}
 }

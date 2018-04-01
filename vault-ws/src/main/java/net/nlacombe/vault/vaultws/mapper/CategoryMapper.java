@@ -11,4 +11,12 @@ public class CategoryMapper extends BeanMapper<Category, CategoryEntity>
 	{
 		super(Category.class, CategoryEntity.class);
 	}
+
+	public Category mapToDto(CategoryEntity categoryEntity, int numberOfUses)
+	{
+		Category category = super.mapToDto(categoryEntity);
+		category.setNumberOfUses(numberOfUses);
+
+		return category;
+	}
 }

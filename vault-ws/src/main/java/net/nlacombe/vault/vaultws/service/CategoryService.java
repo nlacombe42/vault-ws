@@ -10,4 +10,6 @@ public interface CategoryService
 	Stream<Category> getCategories(int userId);
 
 	Stream<Category> getCategories(Collection<Integer> categoryIds);
+
+	Category createCategory(int userId, String name);
 }

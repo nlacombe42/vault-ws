@@ -18,6 +18,16 @@ public class CategoryEntity
 
 	private String name;
 
+	public CategoryEntity()
+	{
+	}
+
+	public CategoryEntity(int userId, String name)
+	{
+		this.userId = userId;
+		this.name = name;
+	}
+
 	public int getCategoryId()
 	{
 		return categoryId;
