@@ -1,5 +1,7 @@
 package net.nlacombe.vault.vaultws.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.nlacombe.authlib.jwt.JwtUtil;
 import net.nlacombe.authlib.spring.AuthTokenAuthenticationFilter;
 import net.nlacombe.authlib.spring.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Bean
 	public AuthTokenAuthenticationFilter authTokenAuthenticationFilter()
 	{
-		return new AuthTokenAuthenticationFilter();
+		return new AuthTokenAuthenticationFilter(new JwtUtil(new ObjectMapper()));
 	}
 
 	@Bean
