@@ -169,7 +169,7 @@ public class TransactionServiceImpl implements TransactionService
 	{
 		NotFoundRestException transactionNotFound = new NotFoundRestException("Transaction with ID " + transactionId + " not found for user ID " + userId);
 
-		TransactionEntity transactionEntity = transactionRepository.findOne(transactionId).orElseThrow(() -> transactionNotFound);
+		TransactionEntity transactionEntity = transactionRepository.getOne(transactionId).orElseThrow(() -> transactionNotFound);
 
 		if (transactionEntity.getAccount().getUserId() != userId)
 			throw transactionNotFound;
@@ -179,7 +179,7 @@ public class TransactionServiceImpl implements TransactionService
 
 	private AccountEntity getAccountEntity(int userId, int accountId)
 	{
-		AccountEntity accountEntity = accountRepository.findOne(accountId);
+		AccountEntity accountEntity = accountRepository.getOne(accountId);
 
 		if (accountEntity == null || accountEntity.getUserId() != userId)
 			throw new NotFoundRestException("Account ID " + accountId + " not found for user ID " + userId);

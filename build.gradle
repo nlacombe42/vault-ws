@@ -7,10 +7,10 @@ subprojects {
 	defaultTasks 'tasks'
 
 	group = 'net.nlacombe'
-	version = '9.1.1'
+	version = '10.0.0'
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	sourceCompatibility = 10
+	targetCompatibility = 10
 
 	repositories {
 		mavenCentral()
@@ -18,12 +18,12 @@ subprojects {
 	}
 
 	ext.depVersions = [
-			wsUtils: '4.3.0'
+			wsUtils: '5.0.0'
 	]
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '4.6'
+wrapper {
+	gradleVersion = '4.9'
 }
 
 idea {

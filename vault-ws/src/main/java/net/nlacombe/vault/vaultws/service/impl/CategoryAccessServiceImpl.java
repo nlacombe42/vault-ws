@@ -25,7 +25,7 @@ public class CategoryAccessServiceImpl implements CategoryAccessService
 		if (categoryId == null)
 			return null;
 
-		CategoryEntity categoryEntity = categoryRepository.findOne(categoryId);
+		CategoryEntity categoryEntity = categoryRepository.getOne(categoryId);
 
 		if (categoryEntity == null || categoryEntity.getUserId() != userId)
 			throw new NotFoundRestException("Category ID " + categoryId + " not found for user ID " + userId);

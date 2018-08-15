@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService
 	@Override
 	public Account getAccount(int accountId)
 	{
-		AccountEntity accountEntity = accountRepository.findOne(accountId);
+		AccountEntity accountEntity = accountRepository.getOne(accountId);
 
 		return accountMapper.mapToDto(accountEntity);
 	}

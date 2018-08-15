@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @Repository
 public interface TransactionRepository extends org.springframework.data.repository.Repository<TransactionEntity, Integer>
 {
-	Optional<TransactionEntity> findOne(Integer transactionId);
+	Optional<TransactionEntity> getOne(Integer transactionId);
 
 	void delete(TransactionEntity transactionEntity);
 

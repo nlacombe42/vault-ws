@@ -4,26 +4,19 @@ buildscript {
 	}
 
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE'
-		classpath 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
-		classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE'
+		classpath 'io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE'
+		classpath 'se.transmode.gradle:gradle-docker:1.2'
 	}
 }
 
 apply plugin: 'org.springframework.boot'
+apply plugin: 'docker'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'com.bmuschko.docker-java-application'
-
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-
-def awsEcrUrl = '118533919239.dkr.ecr.us-east-1.amazonaws.com'
-def dockerRepo = "${awsEcrUrl}/nlacombe"
 
 dependencyManagement {
 	imports {
-		mavenBom 'org.springframework.cloud:spring-cloud-config:1.3.2.RELEASE'
-		mavenBom 'org.springframework.cloud:spring-cloud-consul-dependencies:1.2.1.RELEASE'
+		mavenBom 'org.springframework.cloud:spring-cloud-config:2.0.0.RELEASE'
 	}
 }
 
@@ -35,41 +28,59 @@ dependencies {
 	compile 'net.nlacombe:common-lib:7.0.0'
 
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
-	compile 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile 'org.springframework.boot:spring-boot-starter-actuator'
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile 'org.springframework.boot:spring-boot-starter-security'
-	compile 'org.apache.cxf:cxf-spring-boot-starter-jaxrs:3.2.0'
-	compile 'org.flywaydb:flyway-core:4.2.0'
+	compile 'org.apache.cxf:cxf-spring-boot-starter-jaxrs:3.2.6'
+	compile 'org.flywaydb:flyway-core:5.1.4'
 	compile 'javax.inject:javax.inject:1'
-	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1'
-	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.1'
+	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.6'
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6'
 
 	compile 'org.slf4j:slf4j-api:1.7.25'
 
-	runtime 'mysql:mysql-connector-java:6.0.6'
+	runtime 'mysql:mysql-connector-java:8.0.12'
 	runtime 'ch.qos.logback:logback-classic:1.2.3'
+	runtime 'javax.xml.bind:jaxb-api:2.3.0'
+	runtime 'javax.activation:activation:1.1.1'
 
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.assertj:assertj-core:3.8.0'
 	testCompile 'org.mockito:mockito-core:2.11.0'
 }
 
-task createDockerContext(type: Copy, dependsOn: assemble) {
-	from('src/main/docker')
-	from('build/libs') {
-		include "*.jar"
+task buildDocker(type: Docker, dependsOn: build) {
+	tag = "${project.name}"
+	dockerfile = file('src/main/docker/Dockerfile')
+	doFirst {
+		copy {
+			from jar
+			from file('src/main/docker/')
+			into stageDir
+		}
 	}
-
-	into 'build/docker'
 }
 
-task buildDockerImage(type: DockerBuildImage, dependsOn: createDockerContext) {
-	inputDir = project.file('build/docker')
-	tag = "${dockerRepo}:${project.name}-${project.version}"
+task appengineDeploy(type: Exec, dependsOn: build) {
+	def appengineBuildDir = file('build/appengine/')
+	def version = project.version.replaceAll('\\.', '-') + '-' + getDateTimestamp()
+
+	workingDir appengineBuildDir
+	commandLine 'gcloud', 'app', 'deploy', '-q', '-v', version
+
+	doFirst {
+		copy {
+			from jar
+			from file('src/main/appengine/app.yaml')
+			from file('src/main/docker/')
+			into appengineBuildDir
+		}
+	}
 }
 
-task pushDockerImage(type: DockerPushImage, dependsOn: buildDockerImage) {
-	imageName = buildDockerImage.tag
+def static getDateTimestamp() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMddHHmmss')
+	return formattedDate
 }

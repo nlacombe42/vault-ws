@@ -3,7 +3,6 @@ package net.nlacombe.vault.vaultws.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import net.nlacombe.wsutils.filter.CorsFilter;
 import net.nlacombe.wsutils.filter.RequestLogFilter;
 import net.nlacombe.wsutils.restexception.providers.RestExceptionFeature;
 import org.springframework.context.annotation.Bean;

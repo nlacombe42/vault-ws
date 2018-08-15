@@ -6,8 +6,8 @@
 		</encoder>
 	</appender>
 
-	<logger name="net.nlacombe.vault.vaultws" level="debug"/>
-	<logger name="net.nlacombe.wsutils" level="debug"/>
+    <logger name="net.nlacombe.vault.vaultws" level="info"/>
+    <logger name="net.nlacombe.wsutils" level="info"/>
 
 	<root level="warn">
 		<appender-ref ref="consoleLog"/>
