@@ -7,10 +7,10 @@ subprojects {
 	defaultTasks 'tasks'
 
 	group = 'net.nlacombe'
-	version = '10.0.0'
+	version = '10.0.1'
 
-	sourceCompatibility = 10
-	targetCompatibility = 10
+	sourceCompatibility = 11
+	targetCompatibility = 11
 
 	repositories {
 		mavenCentral()
@@ -23,7 +23,7 @@ subprojects {
 }
 
 wrapper {
-	gradleVersion = '4.9'
+	gradleVersion = '5.2.1'
 }
 
 idea {

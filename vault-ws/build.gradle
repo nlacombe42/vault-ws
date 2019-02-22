@@ -25,7 +25,7 @@ dependencies {
 
 	compile "net.nlacombe:ws-utils:${depVersions.wsUtils}"
 	compile 'net.nlacombe:auth-lib:10.0.0'
-	compile 'net.nlacombe:common-lib:7.0.0'
+	compile 'net.nlacombe:common-lib:8.0.0'
 
 	compile 'org.springframework.cloud:spring-cloud-starter-config'
 	compile "org.springframework.boot:spring-boot-starter-web"
@@ -44,13 +44,14 @@ dependencies {
 	runtime 'ch.qos.logback:logback-classic:1.2.3'
 	runtime 'javax.xml.bind:jaxb-api:2.3.0'
 	runtime 'javax.activation:activation:1.1.1'
+	runtime 'org.javassist:javassist:3.24.1-GA'
 
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.assertj:assertj-core:3.8.0'
-	testCompile 'org.mockito:mockito-core:2.11.0'
+	testCompile 'org.mockito:mockito-core:2.24.5'
 }
 
-task buildDocker(type: Docker, dependsOn: build) {
+task buildDocker(type: Docker, dependsOn: assemble) {
 	tag = "${project.name}"
 	dockerfile = file('src/main/docker/Dockerfile')
 	doFirst {
