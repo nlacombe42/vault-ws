@@ -20,6 +20,11 @@ dependencyManagement {
 	}
 }
 
+project.ext.gcloudBuildDir = file('build/appengine/')
+project.ext.gcloudProjectId = 'nlacombe-net-prod'
+
+String gcloudDockerImageUrl
+
 dependencies {
 	compile project(':vault-api')
 
@@ -63,25 +68,36 @@ task buildDocker(type: Docker, dependsOn: assemble) {
 	}
 }
 
-task appengineDeploy(type: Exec, dependsOn: build) {
-	def appengineBuildDir = file('build/appengine/')
-	def version = project.version.replaceAll('\\.', '-') + '-' + getDateTimestamp()
+task buildGcloudDockerImage(type: Exec, dependsOn: assemble) {
+	def buildStartTime = new Date()
+	gcloudDockerImageUrl = getGcloudDockerImageUrl(buildStartTime)
 
-	workingDir appengineBuildDir
-	commandLine 'gcloud', 'app', 'deploy', '-q', '-v', version
+	workingDir project.gcloudBuildDir
+	commandLine 'gcloud', 'builds', 'submit', '--tag', gcloudDockerImageUrl
 
 	doFirst {
 		copy {
 			from jar
-			from file('src/main/appengine/app.yaml')
 			from file('src/main/docker/')
-			into appengineBuildDir
+			into project.gcloudBuildDir
 		}
 	}
 }
 
-def static getDateTimestamp() {
-	def date = new Date()
-	def formattedDate = date.format('yyyyMMddHHmmss')
-	return formattedDate
+task deployToProdGcloud(type: Exec, dependsOn: buildGcloudDockerImage) {
+	workingDir project.gcloudBuildDir
+	commandLine 'gcloud', 'beta', 'run', 'deploy', "${project.name}",
+			'--region', 'us-central1',
+			'--memory', '500M',
+			'--image', gcloudDockerImageUrl
+}
+
+def getGcloudDockerImageUrl(date) {
+	def version = project.version + '-' + getDateTimestamp(date)
+
+	return "gcr.io/${project.gcloudProjectId}/${project.name}:${version}"
+}
+
+def static getDateTimestamp(date) {
+	return date.format('yyyyMMddHHmmss')
 }
