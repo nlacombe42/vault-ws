@@ -20,7 +20,7 @@ dependencyManagement {
 	}
 }
 
-project.ext.gcloudBuildDir = file('build/appengine/')
+project.ext.gcloudBuildDir = file('build/gcloud-build/')
 project.ext.gcloudProjectId = 'nlacombe-net-prod'
 
 String gcloudDockerImageUrl
