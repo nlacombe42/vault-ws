@@ -17,3 +17,4 @@ gradle-app.setting
 ### Secret files NEVER to commit ###
 secret.properties
 bootstrap.properties
+gcp-service-account-credentials-nlacombe-net-prod.json

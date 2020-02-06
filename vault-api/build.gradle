@@ -1,4 +1,11 @@
+plugins {
+	id 'java-library'
+}
+
+sourceCompatibility = project.javaVersion
+targetCompatibility = project.javaVersion
+
 dependencies {
-	compile 'javax.ws.rs:javax.ws.rs-api:2.1'
-	compile "net.nlacombe:ws-utils:${depVersions.wsUtils}"
+	api 'javax.ws.rs:javax.ws.rs-api:2.1'
+	api "net.nlacombe:ws-utils:${depVersions.wsUtils}"
 }

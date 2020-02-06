@@ -7,6 +7,6 @@ public class PaginationUtils
 {
 	public static PageRequest toPageRequest(PaginationRequest paginationRequest)
 	{
-		return new PageRequest(paginationRequest.getPageNumber(), paginationRequest.getSize());
+		return PageRequest.of(paginationRequest.getPageNumber(), paginationRequest.getSize());
 	}
 }

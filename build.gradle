@@ -1,16 +1,14 @@
-apply plugin: 'idea'
+import org.gradle.api.JavaVersion
+
+plugins {
+	id 'idea'
+}
 
 subprojects {
-	apply plugin: 'java'
-	apply plugin: 'maven'
-
-	defaultTasks 'tasks'
+	apply plugin: 'maven-publish'
 
 	group = 'net.nlacombe'
-	version = '10.0.1'
-
-	sourceCompatibility = 11
-	targetCompatibility = 11
+	version = '10.0.2'
 
 	repositories {
 		mavenCentral()
@@ -20,10 +18,11 @@ subprojects {
 	ext.depVersions = [
 			wsUtils: '5.0.0'
 	]
+	ext.javaVersion = JavaVersion.VERSION_11
 }
 
 wrapper {
-	gradleVersion = '5.2.1'
+	gradleVersion = '6.0.1'
 }
 
 idea {
