@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.webservice.impl;
 
 import net.nlacombe.authlib.spring.AuthUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.BudgetUpdateRequest;
 import net.nlacombe.vault.vaultws.api.dto.BudgetWithTransactions;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
@@ -71,10 +72,10 @@ public class BudgetWebServiceImpl implements BudgetWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
-	public void updateBudgetPlannedMaxAmount(int budgetId, BigDecimal plannedMaxAmount)
+	public void updateBudget(int budgetId, BudgetUpdateRequest budgetUpdateRequest)
 	{
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
-		budgetService.updateBudgetPlannedMaxAmount(userId, budgetId, plannedMaxAmount);
+		budgetService.updateBudget(userId, budgetId, budgetUpdateRequest);
 	}
 }

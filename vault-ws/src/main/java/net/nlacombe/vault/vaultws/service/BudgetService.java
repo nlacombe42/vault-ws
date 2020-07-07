@@ -1,6 +1,7 @@
 package net.nlacombe.vault.vaultws.service;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.BudgetUpdateRequest;
 import net.nlacombe.vault.vaultws.api.dto.BudgetWithTransactions;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
@@ -20,5 +21,5 @@ public interface BudgetService
 
 	Stream<Category> getUnbudgetedCategories(int userId, YearMonth month);
 
-	void updateBudgetPlannedMaxAmount(int userId, int budgetId, BigDecimal plannedMaxAmount);
+    void updateBudget(int userId, int budgetId, BudgetUpdateRequest budgetUpdateRequest);
 }

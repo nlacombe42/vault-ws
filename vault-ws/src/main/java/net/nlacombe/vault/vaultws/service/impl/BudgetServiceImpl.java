@@ -3,6 +3,7 @@ package net.nlacombe.vault.vaultws.service.impl;
 import net.nlacombe.commonlib.util.DateUtil;
 import net.nlacombe.vault.vaultws.api.dto.Budget;
 import net.nlacombe.vault.vaultws.api.dto.BudgetType;
+import net.nlacombe.vault.vaultws.api.dto.BudgetUpdateRequest;
 import net.nlacombe.vault.vaultws.api.dto.BudgetWithTransactions;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
@@ -117,10 +118,12 @@ public class BudgetServiceImpl implements BudgetService
 	}
 
 	@Override
-	public void updateBudgetPlannedMaxAmount(int userId, int budgetId, BigDecimal plannedMaxAmount)
+	public void updateBudget(int userId, int budgetId, BudgetUpdateRequest budgetUpdateRequest)
 	{
 		BudgetEntity budgetEntity = getBudget(userId, budgetId);
-		budgetEntity.setPlannedMaxAmount(plannedMaxAmount);
+		budgetEntity.setPlannedMaxAmount(budgetUpdateRequest.getPlannedMaxAmount());
+		budgetEntity.setIncome(budgetUpdateRequest.isIncome());
+		budgetEntity.setInvestment(budgetUpdateRequest.isInvestment());
 
 		budgetRepository.save(budgetEntity);
 	}

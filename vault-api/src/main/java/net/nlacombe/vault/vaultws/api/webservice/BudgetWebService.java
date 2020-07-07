@@ -1,6 +1,7 @@
 package net.nlacombe.vault.vaultws.api.webservice;
 
 import net.nlacombe.vault.vaultws.api.dto.Budget;
+import net.nlacombe.vault.vaultws.api.dto.BudgetUpdateRequest;
 import net.nlacombe.vault.vaultws.api.dto.BudgetWithTransactions;
 import net.nlacombe.vault.vaultws.api.dto.Category;
 import net.nlacombe.vault.vaultws.api.dto.MonthBudgetCreationRequest;
@@ -40,6 +41,6 @@ public interface BudgetWebService
 	BudgetWithTransactions getBudgetWithTransactions(@PathParam("budgetId") int budgetId);
 
 	@PUT
-	@Path("/{budgetId}/plannedMaxAmount")
-	void updateBudgetPlannedMaxAmount(@PathParam("budgetId") int budgetId, BigDecimal plannedMaxAmount);
+	@Path("/{budgetId}")
+	void updateBudget(@PathParam("budgetId") int budgetId, BudgetUpdateRequest budgetUpdateRequest);
 }
