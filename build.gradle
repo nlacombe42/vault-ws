@@ -1,5 +1,3 @@
-import org.gradle.api.JavaVersion
-
 plugins {
 	id 'idea'
 }
@@ -18,11 +16,11 @@ subprojects {
 	ext.depVersions = [
 			wsUtils: '5.0.0'
 	]
-	ext.javaVersion = JavaVersion.VERSION_11
+	ext.javaVersion = JavaVersion.VERSION_14
 }
 
 wrapper {
-	gradleVersion = '6.0.1'
+	gradleVersion = '6.5'
 }
 
 idea {
