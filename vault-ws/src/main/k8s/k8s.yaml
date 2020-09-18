@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-ws
+  labels:
+    app: vault-ws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-ws
+  template:
+    metadata:
+      labels:
+        app: vault-ws
+    spec:
+      containers:
+        - name: vault-ws
+          image: gcr.io/nlacombe-net-prod/vault-ws:11.0.0-20200707200501
+          env:
+            - name: PORT
+              value: "80"
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-ws
+spec:
+  selector:
+    app: vault-ws
+  ports:
+    - port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vault-ws
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: https
+spec:
+  rules:
+    - host: vault-api.nlacombe.net
+      http:
+        paths:
+          - backend:
+              serviceName: vault-ws
+              servicePort: 80
