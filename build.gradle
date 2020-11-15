@@ -3,8 +3,6 @@ plugins {
 }
 
 subprojects {
-	apply plugin: 'maven-publish'
-
 	group = 'net.nlacombe'
 	version = '11.1.0'
 
