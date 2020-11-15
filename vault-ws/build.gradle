@@ -17,6 +17,9 @@ apply plugin: 'io.spring.dependency-management'
 
 def springCloudVersion = 'Hoxton.SR1'
 
+sourceCompatibility = project.javaVersion
+targetCompatibility = project.javaVersion
+
 dependencyManagement {
 	imports {
 		mavenBom 'org.springframework.cloud:spring-cloud-config:2.0.0.RELEASE'
