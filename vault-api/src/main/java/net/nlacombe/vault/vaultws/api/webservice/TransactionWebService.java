@@ -57,4 +57,8 @@ public interface TransactionWebService
 	@DELETE
 	@Path("/{transactionId}")
 	void deleteTransaction(@PathParam("transactionId") int transactionId);
+
+	@DELETE
+	@Path("/temporary")
+	void deleteTemporaryTransactions();
 }

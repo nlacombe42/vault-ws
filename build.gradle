@@ -6,7 +6,7 @@ subprojects {
 	apply plugin: 'maven-publish'
 
 	group = 'net.nlacombe'
-	version = '11.0.0'
+	version = '11.1.0'
 
 	repositories {
 		mavenCentral()
@@ -20,7 +20,7 @@ subprojects {
 }
 
 wrapper {
-	gradleVersion = '6.5'
+	gradleVersion = '6.7'
 }
 
 idea {

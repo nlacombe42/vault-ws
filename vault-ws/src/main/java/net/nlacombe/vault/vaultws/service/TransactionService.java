@@ -35,4 +35,6 @@ public interface TransactionService
 	Transaction getTransaction(int userId, int transactionId);
 
 	void deleteTransaction(int userId, int transactionId);
+
+    void deleteTemporaryTransactions(int userId);
 }

@@ -50,10 +50,14 @@ public class TransactionServiceImpl implements TransactionService
 	{
 		transaction.setTransactionId(0);
 
-		AccountEntity accountEntity = getAccountEntity(userId, transaction.getAccountId());
-		CategoryEntity categoryentity = categoryAccessService.getCategoryEntity(userId, transaction.getCategoryId());
+		if (transaction.getTemporary() == null) {
+			transaction.setTemporary(false);
+		}
 
-		TransactionEntity transactionEntity = transactionMapper.mapToEntity(transaction);
+		var accountEntity = getAccountEntity(userId, transaction.getAccountId());
+		var categoryentity = categoryAccessService.getCategoryEntity(userId, transaction.getCategoryId());
+
+		var transactionEntity = transactionMapper.mapToDomainObject(transaction);
 		transactionEntity.setAccount(accountEntity);
 		transactionEntity.setCategory(categoryentity);
 
@@ -151,6 +155,11 @@ public class TransactionServiceImpl implements TransactionService
 		TransactionEntity transactionEntity = getTransactionEntity(userId, transactionId);
 
 		transactionRepository.delete(transactionEntity);
+	}
+
+	@Override
+	public void deleteTemporaryTransactions(int userId) {
+		transactionRepository.deleteByAccount_UserIdAndTemporary(userId, true);
 	}
 
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)

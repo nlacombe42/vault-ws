@@ -27,6 +27,8 @@ public interface TransactionRepository extends org.springframework.data.reposito
 
 	Stream<TransactionEntity> findByCategory(CategoryEntity categoryEntity);
 
+	void deleteByAccount_UserIdAndTemporary(int userId, boolean temporary);
+
 	int countByCategory(CategoryEntity categoryEntity);
 
 	Page<TransactionEntity> findByAccountUserIdOrderByDatetimeDesc(int userId, Pageable pageable);

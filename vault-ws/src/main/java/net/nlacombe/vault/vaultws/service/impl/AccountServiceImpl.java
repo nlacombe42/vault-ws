@@ -24,7 +24,7 @@ public class AccountServiceImpl implements AccountService
 	{
 		account.setAccountId(0);
 
-		AccountEntity accountEntity = accountMapper.mapToEntity(account);
+		AccountEntity accountEntity = accountMapper.mapToDomainObject(account);
 		accountEntity = accountRepository.save(accountEntity);
 
 		return accountMapper.mapToDto(accountEntity);

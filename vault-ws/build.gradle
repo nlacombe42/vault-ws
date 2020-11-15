@@ -35,7 +35,7 @@ dependencies {
 
 	implementation "net.nlacombe:ws-utils:${depVersions.wsUtils}"
 	implementation 'net.nlacombe:auth-lib:10.0.0'
-	implementation 'net.nlacombe:common-lib:10.2.0'
+	implementation 'net.nlacombe:common-lib:11.0.0'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-gcp-starter'

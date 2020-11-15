@@ -17,6 +17,16 @@ public class Transaction
 
 	private BigDecimal amount;
 
+	private Boolean temporary;
+
+	public Boolean getTemporary() {
+		return temporary;
+	}
+
+	public void setTemporary(Boolean temporary) {
+		this.temporary = temporary;
+	}
+
 	public int getTransactionId()
 	{
 		return transactionId;

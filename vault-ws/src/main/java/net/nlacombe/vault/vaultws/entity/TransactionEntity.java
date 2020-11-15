@@ -32,6 +32,16 @@ public class TransactionEntity
 
 	private BigDecimal amount;
 
+	private boolean temporary;
+
+	public boolean isTemporary() {
+		return temporary;
+	}
+
+	public void setTemporary(boolean temporary) {
+		this.temporary = temporary;
+	}
+
 	public int getTransactionId()
 	{
 		return transactionId;

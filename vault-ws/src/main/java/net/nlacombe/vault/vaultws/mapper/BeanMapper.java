@@ -1,40 +1,41 @@
 package net.nlacombe.vault.vaultws.mapper;
 
+import net.nlacombe.commonlib.mapping.AbstractBeanMapper;
 import org.springframework.beans.BeanUtils;
 
-public class BeanMapper<DtoType, EntityType> implements Mapper<DtoType, EntityType>
+public class BeanMapper<DtoType, DomainType> extends AbstractBeanMapper<DtoType, DomainType>
 {
-	private Class<DtoType> dtoClass;
-	private Class<EntityType> entityClass;
+	private final Class<DtoType> dtoClass;
+	private final Class<DomainType> domainClass;
 
-	public BeanMapper(Class<DtoType> dtoClass, Class<EntityType> entityClass)
+	public BeanMapper(Class<DtoType> dtoClass, Class<DomainType> domainClass)
 	{
 		this.dtoClass = dtoClass;
-		this.entityClass = entityClass;
+		this.domainClass = domainClass;
 	}
 
 	@Override
-	public EntityType mapToEntity(DtoType dto)
+	public DomainType mapToDomainObject(DtoType dto)
 	{
 		if (dto == null)
 			return null;
 
-		EntityType entity = BeanUtils.instantiate(entityClass);
+		DomainType domainObject = BeanUtils.instantiateClass(domainClass);
 
-		BeanUtils.copyProperties(dto, entity);
+		BeanUtils.copyProperties(dto, domainObject);
 
-		return entity;
+		return domainObject;
 	}
 
 	@Override
-	public DtoType mapToDto(EntityType entity)
+	public DtoType mapToDto(DomainType domainObject)
 	{
-		if (entity == null)
+		if (domainObject == null)
 			return null;
 
-		DtoType dto = BeanUtils.instantiate(dtoClass);
+		DtoType dto = BeanUtils.instantiateClass(dtoClass);
 
-		BeanUtils.copyProperties(entity, dto);
+		BeanUtils.copyProperties(domainObject, dto);
 
 		return dto;
 	}
