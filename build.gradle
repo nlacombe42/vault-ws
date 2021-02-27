@@ -4,7 +4,7 @@ plugins {
 
 subprojects {
 	group = 'net.nlacombe'
-	version = '11.1.1'
+	version = '11.2.0'
 
 	repositories {
 		mavenCentral()
@@ -14,11 +14,11 @@ subprojects {
 	ext.depVersions = [
 			wsUtils: '5.0.0'
 	]
-	ext.javaVersion = JavaVersion.VERSION_14
+	ext.javaVersion = JavaVersion.VERSION_11
 }
 
 wrapper {
-	gradleVersion = '6.7'
+	gradleVersion = '6.8.3'
 }
 
 idea {

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: vault-ws
-          image: gcr.io/nlacombe-net-prod/vault-ws:11.1.1-20201213200047
+          image: gcr.io/nlacombe-net-prod/vault-ws:11.2.0-20210227164926
           env:
             - name: PORT
               value: "80"

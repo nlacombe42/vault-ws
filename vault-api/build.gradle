@@ -3,22 +3,22 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = project.javaVersion
-targetCompatibility = project.javaVersion
-
 dependencies {
 	api 'javax.ws.rs:javax.ws.rs-api:2.1'
 	api "net.nlacombe:ws-utils:${depVersions.wsUtils}"
 }
 
 java {
+	sourceCompatibility = project.javaVersion
+	targetCompatibility = project.javaVersion
+
 	withJavadocJar()
 	withSourcesJar()
 }
 
 publishing {
 	publications {
-		commonLib(MavenPublication) {
+		vaultApi(MavenPublication) {
 			from components.java
 		}
 	}
