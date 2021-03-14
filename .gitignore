@@ -13,8 +13,3 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
-
-### Secret files NEVER to commit ###
-secret.properties
-bootstrap.properties
-gcp-service-account-credentials-nlacombe-net-prod.json

@@ -16,19 +16,27 @@ spec:
     spec:
       containers:
         - name: vault-ws
-          image: gcr.io/nlacombe-net-prod/vault-ws:11.2.0-20210227164926
+          image: gcr.io/nlacombe-net-prod/vault-ws:12.0.0-20210313193307
           env:
             - name: PORT
               value: "80"
+          volumeMounts:
+            - name: vault-ws-config
+              mountPath: /app/config
+              readOnly: true
           ports:
             - containerPort: 80
           resources:
             requests:
-              cpu: 10m
-              memory: 200Mi
+              cpu: 100m
+              memory: 300Mi
             limits:
               cpu: 600m
-              memory: 500Mi
+              memory: 564Mi
+      volumes:
+        - name: vault-ws-config
+          secret:
+            secretName: vault-ws-config
 ---
 apiVersion: v1
 kind: Service
