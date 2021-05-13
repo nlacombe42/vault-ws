@@ -6,6 +6,7 @@ plugins {
 dependencies {
 	api 'javax.ws.rs:javax.ws.rs-api:2.1'
 	api "net.nlacombe:ws-utils:${depVersions.wsUtils}"
+	api "com.fasterxml.jackson.core:jackson-annotations:${depVersions.jackson}"
 }
 
 java {

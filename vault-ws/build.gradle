@@ -36,8 +36,8 @@ dependencies {
 	implementation project(':vault-api')
 
 	implementation "net.nlacombe:ws-utils:${depVersions.wsUtils}"
-	implementation 'net.nlacombe:auth-lib:12.0.0'
-	implementation 'net.nlacombe:common-lib:11.0.0'
+	implementation 'net.nlacombe:auth-lib:12.0.1'
+	implementation 'net.nlacombe:common-lib:11.1.0'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-sql-mysql'
@@ -50,7 +50,7 @@ dependencies {
 
 	implementation 'org.flywaydb:flyway-core:5.1.4'
 	implementation 'javax.inject:javax.inject:1'
-	implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.1'
+	implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${depVersions.jackson}"
 	implementation 'org.slf4j:slf4j-api:1.7.30'
 
 	runtimeOnly 'mysql:mysql-connector-java:8.0.23'

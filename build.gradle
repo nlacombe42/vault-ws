@@ -4,7 +4,7 @@ plugins {
 
 subprojects {
 	group = 'net.nlacombe'
-	version = '12.0.0'
+	version = '12.0.1'
 
 	repositories {
 		mavenCentral()
@@ -12,7 +12,8 @@ subprojects {
 	}
 
 	ext.depVersions = [
-			wsUtils: '5.0.0'
+			wsUtils: '7.0.0',
+			jackson: '2.12.1',
 	]
 	ext.javaVersion = JavaVersion.VERSION_11
 }
