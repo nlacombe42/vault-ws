@@ -2,6 +2,7 @@ package net.nlacombe.vault.vaultws.service;
 
 import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
 import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
+import net.nlacombe.vault.vaultws.api.dto.SplitTransactionRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 
 import java.math.BigDecimal;
@@ -37,4 +38,6 @@ public interface TransactionService
 	void deleteTransaction(int userId, int transactionId);
 
     void deleteTemporaryTransactions(int userId);
+
+    void splitTransaction(int userId, SplitTransactionRequest splitTransactionRequest);
 }

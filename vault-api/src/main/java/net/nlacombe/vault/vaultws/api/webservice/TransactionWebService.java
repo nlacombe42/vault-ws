@@ -3,6 +3,7 @@ package net.nlacombe.vault.vaultws.api.webservice;
 import net.nlacombe.vault.vaultws.api.dto.CategorizeRequest;
 import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
 import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
+import net.nlacombe.vault.vaultws.api.dto.SplitTransactionRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.meta.VaultWsPathConstants;
 import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
@@ -61,4 +62,8 @@ public interface TransactionWebService
 	@DELETE
 	@Path("/temporary")
 	void deleteTemporaryTransactions();
+
+	@POST
+	@Path("/split")
+	void splitTransaction(SplitTransactionRequest splitTransactionRequest);
 }

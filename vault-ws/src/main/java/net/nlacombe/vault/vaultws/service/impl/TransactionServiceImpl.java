@@ -3,16 +3,21 @@ package net.nlacombe.vault.vaultws.service.impl;
 import net.nlacombe.vault.vaultws.api.dto.PaginationRequest;
 import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
 import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
+import net.nlacombe.vault.vaultws.api.dto.SplitChildTransactionRequest;
+import net.nlacombe.vault.vaultws.api.dto.SplitTransactionRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.entity.AccountEntity;
 import net.nlacombe.vault.vaultws.entity.CategoryEntity;
+import net.nlacombe.vault.vaultws.entity.ParentTransactionEntity;
 import net.nlacombe.vault.vaultws.entity.TransactionEntity;
 import net.nlacombe.vault.vaultws.mapper.TransactionMapper;
 import net.nlacombe.vault.vaultws.repositorty.AccountRepository;
+import net.nlacombe.vault.vaultws.repositorty.ParentTransactionRepository;
 import net.nlacombe.vault.vaultws.repositorty.TransactionRepository;
 import net.nlacombe.vault.vaultws.service.CategoryAccessService;
 import net.nlacombe.vault.vaultws.service.TransactionService;
 import net.nlacombe.vault.vaultws.util.PaginationUtils;
+import net.nlacombe.wsutils.restexception.exception.InvalidInputRestException;
 import net.nlacombe.wsutils.restexception.exception.NotFoundRestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,19 +35,20 @@ import java.util.stream.Stream;
 @Service
 public class TransactionServiceImpl implements TransactionService
 {
-	private AccountRepository accountRepository;
-	private CategoryAccessService categoryAccessService;
-	private TransactionRepository transactionRepository;
-	private TransactionMapper transactionMapper;
+	private final AccountRepository accountRepository;
+	private final CategoryAccessService categoryAccessService;
+	private final TransactionRepository transactionRepository;
+	private final TransactionMapper transactionMapper;
+	private final ParentTransactionRepository parentTransactionRepository;
 
-	@Inject
 	public TransactionServiceImpl(AccountRepository accountRepository, CategoryAccessService categoryAccessService, TransactionRepository transactionRepository,
-								  TransactionMapper transactionMapper)
+								  TransactionMapper transactionMapper, ParentTransactionRepository parentTransactionRepository)
 	{
 		this.accountRepository = accountRepository;
 		this.categoryAccessService = categoryAccessService;
 		this.transactionRepository = transactionRepository;
 		this.transactionMapper = transactionMapper;
+		this.parentTransactionRepository = parentTransactionRepository;
 	}
 
 	@Override
@@ -160,6 +166,76 @@ public class TransactionServiceImpl implements TransactionService
 	@Override
 	public void deleteTemporaryTransactions(int userId) {
 		transactionRepository.deleteByAccount_UserIdAndTemporary(userId, true);
+	}
+
+	@Override
+	public void splitTransaction(int userId, SplitTransactionRequest splitTransactionRequest) {
+		var parentTransaction = getTransactionEntity(userId, splitTransactionRequest.getTransactionId());
+
+		validateNotSplittingAChildTransaction(parentTransaction);
+		validateNotSplittingTemporaryTransaction(parentTransaction);
+		validateChildTransactionInfoProvided(splitTransactionRequest);
+		validateTotalChildAmountMatchesParentAmount(parentTransaction, splitTransactionRequest);
+
+		var parentTransactionEntity = moveTransactionToParentTransaction(parentTransaction);
+
+		splitTransactionRequest.getChildTransactions().forEach(childTransaction ->
+				createChildTransaction(parentTransactionEntity, childTransaction.getDescription(), childTransaction.getAmount())
+		);
+	}
+
+	private void createChildTransaction(ParentTransactionEntity parentTransactionEntity, String description, BigDecimal amount) {
+		var transactionEntity = new TransactionEntity();
+		transactionEntity.setTransactionId(0);
+		transactionEntity.setParentTransaction(parentTransactionEntity);
+		transactionEntity.setAccount(parentTransactionEntity.getAccount());
+		transactionEntity.setCategory(null);
+		transactionEntity.setDatetime(parentTransactionEntity.getDatetime());
+		transactionEntity.setTemporary(false);
+		transactionEntity.setDescription(description);
+		transactionEntity.setAmount(amount);
+
+		transactionRepository.save(transactionEntity);
+	}
+
+	private ParentTransactionEntity moveTransactionToParentTransaction(TransactionEntity parentTransaction) {
+		var parentTransactionEntity = new ParentTransactionEntity();
+		parentTransactionEntity.setParentTransactionId(parentTransaction.getTransactionId());
+		parentTransactionEntity.setAccount(parentTransaction.getAccount());
+		parentTransactionEntity.setAmount(parentTransaction.getAmount());
+		parentTransactionEntity.setDatetime(parentTransaction.getDatetime());
+		parentTransactionEntity.setDescription(parentTransaction.getDescription());
+
+		parentTransactionEntity = parentTransactionRepository.save(parentTransactionEntity);
+		transactionRepository.delete(parentTransaction);
+
+		return parentTransactionEntity;
+	}
+
+	private void validateTotalChildAmountMatchesParentAmount(TransactionEntity parentTransaction, SplitTransactionRequest splitTransactionRequest) {
+		var childTotalAmount = splitTransactionRequest.getChildTransactions().stream()
+				.map(SplitChildTransactionRequest::getAmount)
+				.reduce(BigDecimal::add)
+				.orElseThrow();
+		var parentTransactionAmount = parentTransaction.getAmount();
+
+		if (!parentTransactionAmount.equals(childTotalAmount))
+			throw new InvalidInputRestException("total amount of child transactions not equal to parent transaction amount of " + parentTransactionAmount);
+	}
+
+	private void validateChildTransactionInfoProvided(SplitTransactionRequest splitTransactionRequest) {
+		if (splitTransactionRequest.getChildTransactions().isEmpty())
+			throw new InvalidInputRestException("you must supply child transactions to split a transaction");
+	}
+
+	private void validateNotSplittingTemporaryTransaction(TransactionEntity parentTransaction) {
+		if (parentTransaction.isTemporary())
+			throw new InvalidInputRestException("cannot split a transaction that is temporary");
+	}
+
+	private void validateNotSplittingAChildTransaction(TransactionEntity parentTransaction) {
+		if (parentTransaction.getParentTransaction() != null)
+			throw new InvalidInputRestException("cannot split a transaction that was created by a transaction split");
 	}
 
 	private Page<TransactionEntity> getAllOrOnlyCategorizedTransactions(int userId, Pageable pageRequest, boolean categorizedOnly)

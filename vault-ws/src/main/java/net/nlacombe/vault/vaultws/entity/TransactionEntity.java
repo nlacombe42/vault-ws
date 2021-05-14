@@ -34,6 +34,10 @@ public class TransactionEntity
 
 	private boolean temporary;
 
+	@ManyToOne
+	@JoinColumn(name = "parentTransactionId")
+	private ParentTransactionEntity parentTransaction;
+
 	public boolean isTemporary() {
 		return temporary;
 	}
@@ -100,5 +104,13 @@ public class TransactionEntity
 	public void setAmount(BigDecimal amount)
 	{
 		this.amount = amount;
+	}
+
+	public ParentTransactionEntity getParentTransaction() {
+		return parentTransaction;
+	}
+
+	public void setParentTransaction(ParentTransactionEntity parentTransaction) {
+		this.parentTransaction = parentTransaction;
 	}
 }

@@ -19,6 +19,8 @@ public class Transaction
 
 	private Boolean temporary;
 
+	private Integer parentTransactionId;
+
 	public Boolean getTemporary() {
 		return temporary;
 	}
@@ -85,5 +87,13 @@ public class Transaction
 	public void setAmount(BigDecimal amount)
 	{
 		this.amount = amount;
+	}
+
+	public Integer getParentTransactionId() {
+		return parentTransactionId;
+	}
+
+	public void setParentTransactionId(Integer parentTransactionId) {
+		this.parentTransactionId = parentTransactionId;
 	}
 }

@@ -6,24 +6,23 @@ import net.nlacombe.vault.vaultws.entity.TransactionEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransactionMapper extends BeanMapper<Transaction, TransactionEntity>
-{
-	public TransactionMapper()
-	{
-		super(Transaction.class, TransactionEntity.class);
-	}
+public class TransactionMapper extends BeanMapper<Transaction, TransactionEntity> {
 
-	@Override
-	public Transaction mapToDto(TransactionEntity transactionEntity)
-	{
-		Transaction transactionDto = super.mapToDto(transactionEntity);
-		transactionDto.setAccountId(transactionEntity.getAccount().getAccountId());
+    public TransactionMapper() {
+        super(Transaction.class, TransactionEntity.class);
+    }
 
-		CategoryEntity category = transactionEntity.getCategory();
+    @Override
+    public Transaction mapToDto(TransactionEntity transactionEntity) {
+        Transaction transactionDto = super.mapToDto(transactionEntity);
+        transactionDto.setAccountId(transactionEntity.getAccount().getAccountId());
+        transactionDto.setParentTransactionId(transactionEntity.getParentTransaction() == null ? null : transactionEntity.getParentTransaction().getParentTransactionId());
 
-		if (category != null)
-			transactionDto.setCategoryId(category.getCategoryId());
+        CategoryEntity category = transactionEntity.getCategory();
 
-		return transactionDto;
-	}
+        if (category != null)
+            transactionDto.setCategoryId(category.getCategoryId());
+
+        return transactionDto;
+    }
 }

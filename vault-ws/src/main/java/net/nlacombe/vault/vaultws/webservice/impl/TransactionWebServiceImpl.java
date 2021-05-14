@@ -5,6 +5,7 @@ import net.nlacombe.vault.vaultws.api.dto.Account;
 import net.nlacombe.vault.vaultws.api.dto.CategorizeRequest;
 import net.nlacombe.vault.vaultws.api.dto.PaginationResponse;
 import net.nlacombe.vault.vaultws.api.dto.SearchTransactionsRequest;
+import net.nlacombe.vault.vaultws.api.dto.SplitTransactionRequest;
 import net.nlacombe.vault.vaultws.api.dto.Transaction;
 import net.nlacombe.vault.vaultws.api.webservice.TransactionWebService;
 import net.nlacombe.vault.vaultws.service.AccountService;
@@ -14,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -23,10 +23,9 @@ import java.util.List;
 @Transactional
 public class TransactionWebServiceImpl implements TransactionWebService
 {
-	private TransactionService transactionService;
-	private AccountService accountService;
+	private final TransactionService transactionService;
+	private final AccountService accountService;
 
-	@Inject
 	public TransactionWebServiceImpl(TransactionService transactionService, AccountService accountService)
 	{
 		this.transactionService = transactionService;
@@ -105,6 +104,14 @@ public class TransactionWebServiceImpl implements TransactionWebService
 		int userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		transactionService.deleteTemporaryTransactions(userId);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@Override
+	public void splitTransaction(SplitTransactionRequest splitTransactionRequest) {
+		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+
+		transactionService.splitTransaction(userId, splitTransactionRequest);
 	}
 
 	private void validateUserHasAccount(int accountId, int userId)
