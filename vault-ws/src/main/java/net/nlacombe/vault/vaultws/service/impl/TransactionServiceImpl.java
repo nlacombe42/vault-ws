@@ -73,9 +73,14 @@ public class TransactionServiceImpl implements TransactionService
 	}
 
 	@Override
-	public int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount)
-	{
-		return transactionRepository.countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(accountId, datetime, description, amount);
+	public int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount, boolean includeParentTransactions) {
+
+		var total = transactionRepository.countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(accountId, datetime, description, amount);
+
+		if (includeParentTransactions)
+			total += parentTransactionRepository.countByAccountAccountIdAndDatetimeAndDescriptionAndAmount(accountId, datetime, description, amount);
+
+		return total;
 	}
 
 	@Override

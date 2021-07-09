@@ -34,10 +34,13 @@ public interface TransactionWebService
 	 */
 	@GET
 	@Path("/count")
-	int countTransactions(@QueryParam("accountId") int accountId,
-						  @QueryParam("datetime") String datetime,
-						  @QueryParam("description") String description,
-						  @QueryParam("amount") BigDecimal amount) throws NotFoundRestException;
+	int countTransactions(
+			@QueryParam("accountId") int accountId,
+			@QueryParam("datetime") String datetime,
+			@QueryParam("description") String description,
+			@QueryParam("amount") BigDecimal amount,
+			@QueryParam("includeParentTransactions") Boolean includeParentTransactions
+	) throws NotFoundRestException;
 
 	@POST
 	@Path("/search")

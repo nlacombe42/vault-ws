@@ -15,7 +15,7 @@ public interface TransactionService
 {
 	Transaction createTransaction(int userId, Transaction transaction);
 
-	int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount);
+	int countTransactions(int accountId, Instant datetime, String description, BigDecimal amount, boolean includeParentTransactionsCanBeNull);
 
 	List<Transaction> getUncategorizedTransactions(int userId);
 

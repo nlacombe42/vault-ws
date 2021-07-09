@@ -43,14 +43,15 @@ public class TransactionWebServiceImpl implements TransactionWebService
 
 	@PreAuthorize("isAuthenticated()")
 	@Override
-	public int countTransactions(int accountId, String datetimeText, String description, BigDecimal amount)
+	public int countTransactions(int accountId, String datetimeText, String description, BigDecimal amount, Boolean includeParentTransactionsCanBeNull)
 	{
-		Instant datetime = Instant.parse(datetimeText);
-		int userId = AuthUtil.getAuthenticatedUser().getUserId();
+		var includeParentTransactions = includeParentTransactionsCanBeNull != null && includeParentTransactionsCanBeNull;
+		var datetime = Instant.parse(datetimeText);
+		var userId = AuthUtil.getAuthenticatedUser().getUserId();
 
 		validateUserHasAccount(accountId, userId);
 
-		return transactionService.countTransactions(accountId, datetime, description, amount);
+		return transactionService.countTransactions(accountId, datetime, description, amount, includeParentTransactions);
 	}
 
 	@PreAuthorize("isAuthenticated()")
